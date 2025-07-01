@@ -3,10 +3,13 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl, { Map } from "mapbox-gl";
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
+import { FaExclamationTriangle, FaHandsHelping } from "react-icons/fa";
+import { RiChatHistoryLine } from "react-icons/ri";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYWlzaGFoMTAxIiwiYSI6ImNtY2lvampibzE3cHUybHF2czJtY2swYWwifQ.rX3EFhb68jdKgbLqd2GUuA";
 
+// للغة العربية
 mapboxgl.setRTLTextPlugin(
   "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js",
   () => console.log("RTL plugin loaded"),
@@ -21,118 +24,63 @@ const TripNavigator: React.FC = () => {
   const directionsRef = useRef<InstanceType<typeof MapboxDirections> | null>(
     null
   );
-  const observerRef = useRef<MutationObserver | null>(null);
 
   const [showReportOptions, setShowReportOptions] = useState(false);
-  const [hasZoomedOnce, setHasZoomedOnce] = useState(false);
-
-  const mockApiUrl = "https://68638e0088359a373e954fdb.mockapi.io/reports"; // ← غيّر هذا
+  const [showHelpOptions, setShowHelpOptions] = useState(false);
+  const [activityLog, setActivityLog] = useState<
+    {
+      type: "بلاغ" | "مساعدة";
+      content: string;
+      coords: [number, number];
+      timestamp: string;
+    }[]
+  >([]);
+  const [showLog, setShowLog] = useState(false);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    mapRef.current = new mapboxgl.Map({
+    const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/aishah101/cmck36kem000u01sj152a4sn3",
       center: [46.6753, 24.7136],
       zoom: 6,
     });
 
-    const directions = new MapboxDirections(
-      {
-        accessToken: mapboxgl.accessToken,
-        unit: "metric",
-        profile: "mapbox/driving",
-        interactive: true,
-        language: "ar",
+    mapRef.current = map;
+
+    const directions = new MapboxDirections({
+      accessToken: mapboxgl.accessToken,
+      unit: "metric",
+      profile: "mapbox/driving",
+      language: "ar",
+    });
+
+    map.addControl(directions, "top-left");
+    directionsRef.current = directions;
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords: [number, number] = [
+          pos.coords.longitude,
+          pos.coords.latitude,
+        ];
+        map.flyTo({ center: coords, zoom: 14 });
+        userMarkerRef.current = new mapboxgl.Marker({ color: "blue" })
+          .setLngLat(coords)
+          .addTo(map);
+        directions.setOrigin(coords);
       },
-      { flyTo: false }
+      (err) => console.error(err)
     );
 
-    directionsRef.current = directions;
-    mapRef.current.addControl(directions, "top-left");
-
-    observerRef.current = new MutationObserver(() => {
-      const originInput = document.querySelector(
-        "#mapbox-directions-origin-input input"
-      );
-      const destinationInput = document.querySelector(
-        "#mapbox-directions-destination-input input"
-      );
-
-      if (originInput)
-        originInput.setAttribute("placeholder", "اختر نقطة البداية");
-      if (destinationInput)
-        destinationInput.setAttribute("placeholder", "اختر الوجهة");
-
-      observerRef.current?.disconnect();
-    });
-
-    observerRef.current.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
-    mapRef.current.on("style.load", () => {
-      const layers = mapRef.current?.getStyle().layers;
-      if (!layers) return;
-
-      layers.forEach((layer) => {
-        if (
-          layer.type === "symbol" &&
-          layer.layout &&
-          "text-field" in layer.layout
-        ) {
-          mapRef.current?.setLayoutProperty(layer.id, "text-writing-mode", [
-            "horizontal",
-            "vertical",
-          ]);
-          mapRef.current?.setLayoutProperty(layer.id, "text-justify", "right");
-          // @ts-ignore
-          mapRef.current?.setLayoutProperty(layer.id, "text-direction", "rtl");
-        }
-      });
-    });
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const userLocation: [number, number] = [
-            pos.coords.longitude,
-            pos.coords.latitude,
-          ];
-
-          directionsRef.current?.setOrigin(userLocation);
-
-          if (!userMarkerRef.current) {
-            userMarkerRef.current = new mapboxgl.Marker({ color: "blue" })
-              .setLngLat(userLocation)
-              .addTo(mapRef.current!);
-          }
-
-          if (!hasZoomedOnce) {
-            mapRef.current?.flyTo({ center: userLocation, zoom: 14 });
-            setHasZoomedOnce(true);
-          }
-        },
-        (err) => console.error("Error getting location:", err)
-      );
-    }
-
     return () => {
-      mapRef.current?.remove();
-      if (watchIdRef.current !== null) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
-      }
-      observerRef.current?.disconnect();
+      map.remove();
     };
   }, []);
 
   const handleStartTrip = () => {
-    if (!navigator.geolocation || !mapRef.current) {
-      alert("المتصفح لا يدعم الموقع الجغرافي");
-      return;
-    }
+    if (!navigator.geolocation || !mapRef.current) return;
 
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => {
@@ -140,123 +88,165 @@ const TripNavigator: React.FC = () => {
           pos.coords.longitude,
           pos.coords.latitude,
         ];
-
-        if (!userMarkerRef.current) {
-          userMarkerRef.current = new mapboxgl.Marker({ color: "blue" })
-            .setLngLat(coords)
-            .addTo(mapRef.current!);
-        } else {
-          userMarkerRef.current.setLngLat(coords);
-        }
-
+        userMarkerRef.current?.setLngLat(coords);
         directionsRef.current?.setOrigin(coords);
-
-        mapRef.current?.flyTo({ center: coords, zoom: 17 });
+        mapRef.current?.flyTo({ center: coords, zoom: 16 });
       },
-      (error) => console.error("Error watching position:", error),
+      (err) => console.error(err),
       { enableHighAccuracy: true }
     );
   };
 
-  const handleReportType = async (type: string) => {
+  const handleReportType = (type: string) => {
     if (!navigator.geolocation || !mapRef.current) return;
 
-    navigator.geolocation.getCurrentPosition(async (pos) => {
+    navigator.geolocation.getCurrentPosition((pos) => {
       const coords: [number, number] = [
         pos.coords.longitude,
         pos.coords.latitude,
       ];
 
-      const report = {
-        type,
-        coords: {
-          longitude: coords[0],
-          latitude: coords[1],
+      new mapboxgl.Marker({ color: "red" })
+        .setLngLat(coords)
+        .setPopup(new mapboxgl.Popup().setText(`بلاغ: ${type}`))
+        .addTo(mapRef.current!);
+
+      setActivityLog((prev) => [
+        ...prev,
+        {
+          type: "بلاغ",
+          content: type,
+          coords,
+          timestamp: new Date().toLocaleString(),
         },
-        timestamp: new Date().toISOString(),
-      };
+      ]);
 
-      try {
-        const res = await fetch(mockApiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(report),
-        });
+      setShowReportOptions(false);
+    });
+  };
 
-        if (!res.ok) throw new Error("فشل إرسال البلاغ");
+  const handleHelpRequest = (type: string) => {
+    if (!navigator.geolocation || !mapRef.current) return;
 
-        // أضف ماركر للخريطة
-        new mapboxgl.Marker({ color: "red" })
-          .setLngLat(coords)
-          .setPopup(new mapboxgl.Popup().setText(`بلاغ: ${type}`))
-          .addTo(mapRef.current!);
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const coords: [number, number] = [
+        pos.coords.longitude,
+        pos.coords.latitude,
+      ];
 
-        setShowReportOptions(false);
-      } catch (err) {
-        console.error(err);
-        alert("حدث خطأ أثناء إرسال البلاغ");
-      }
+      new mapboxgl.Marker({ color: "green" })
+        .setLngLat(coords)
+        .setPopup(new mapboxgl.Popup().setText(`طلب مساعدة: ${type}`))
+        .addTo(mapRef.current!);
+
+      setActivityLog((prev) => [
+        ...prev,
+        {
+          type: "مساعدة",
+          content: type,
+          coords,
+          timestamp: new Date().toLocaleString(),
+        },
+      ]);
+
+      setShowHelpOptions(false);
     });
   };
 
   return (
     <div>
       <div ref={mapContainerRef} style={{ width: "100%", height: "100vh" }} />
-
+      {/* أبدأ الرحلة */}
       <button
         style={{
           position: "absolute",
           bottom: 20,
           right: 20,
-          zIndex: 1,
-          padding: "10px 20px",
-          fontWeight: "bold",
-          borderRadius: "8px",
-          backgroundColor: "#2c3e50",
-          color: "#fff",
+          zIndex: 10,
+          background: "#2c3e50",
           border: "none",
           cursor: "pointer",
+          color: "#fff",
+          padding: "12px",
+          borderRadius: "50%",
         }}
         onClick={handleStartTrip}
-      >
-        أبدأ الرحلة
-      </button>
+        title="أبدأ الرحلة"
+      ></button>
 
+      {/* بلّغ */}
       <button
         style={{
           position: "absolute",
-          bottom: 20,
-          right: 150,
-          zIndex: 1,
-          padding: "10px 20px",
-          fontWeight: "bold",
-          borderRadius: "8px",
-          backgroundColor: "#e74c3c",
+          bottom: 60,
+          right: 20,
+          zIndex: 10,
+          background: "#e74c3c",
+          border: "none",
+          cursor: "pointer",
+          color: "#fff",
+          padding: "12px",
+          borderRadius: "50%",
+          fontSize: "20px",
+        }}
+        onClick={() => setShowReportOptions(!showReportOptions)}
+        title="بلّغ"
+      >
+        <FaExclamationTriangle />
+      </button>
+
+      {/* اطلب مساعدة */}
+      <button
+        style={{
+          position: "absolute",
+          bottom: 120,
+          right: 20,
+          zIndex: 10,
+          background: "#27ae60",
           color: "#fff",
           border: "none",
           cursor: "pointer",
+          padding: "12px",
+          borderRadius: "50%",
+          fontSize: "20px",
         }}
-        onClick={() => setShowReportOptions((prev) => !prev)}
+        onClick={() => setShowHelpOptions(!showHelpOptions)}
+        title="اطلب مساعدة"
       >
-        بلِّغ
+        <FaHandsHelping />
       </button>
-
+      {/* السجل */}
+      <button
+        style={{
+          position: "absolute",
+          bottom: 200,
+          right: 20,
+          zIndex: 10,
+          background: "#8e44ad",
+          color: "#fff",
+          border: "none",
+          cursor: "pointer",
+          padding: "12px",
+          borderRadius: "50%",
+        }}
+        onClick={() => setShowLog(!showLog)}
+        title="السجل"
+      >
+        <RiChatHistoryLine />
+      </button>
+      {/* خيارات البلاغ */}
       {showReportOptions && (
         <div
           style={{
             position: "absolute",
-            bottom: 70,
-            right: 150,
-            zIndex: 2,
-            background: "#fff",
-            padding: "10px",
+            bottom: 100,
+            right: 70,
+            background: "#1f1f1f",
+            padding: "10px 20px",
             borderRadius: "10px",
-            boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+            zIndex: 11,
           }}
         >
-          <p style={{ marginBottom: 10 }}>اختر نوع البلاغ:</p>
           {[
             "حفرة",
             "حادث",
@@ -268,22 +258,86 @@ const TripNavigator: React.FC = () => {
           ].map((type) => (
             <button
               key={type}
+              onClick={() => handleReportType(type)}
               style={{
                 display: "block",
-                width: "100%",
-                marginBottom: "5px",
-                background: "#3498db",
+                marginBottom: 6,
+                background: "#e74c3c",
+                textAlign: "center",
                 color: "#fff",
                 border: "none",
                 borderRadius: "5px",
                 padding: "6px",
-                cursor: "pointer",
               }}
-              onClick={() => handleReportType(type)}
             >
               {type}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* خيارات المساعدة */}
+      {showHelpOptions && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 100,
+            right: 200,
+            background: "#1f1f1f",
+            border: "none",
+            padding: "10px",
+            borderRadius: "10px",
+            zIndex: 11,
+          }}
+        >
+          {["سطحة", "مساعد شخصي", "بطارية", "بنشر", "وقود"].map((type) => (
+            <button
+              key={type}
+              onClick={() => handleHelpRequest(type)}
+              style={{
+                display: "block",
+                marginBottom: 6,
+                background: "#2ecc71",
+                color: "#fff",
+                borderRadius: "5px",
+                padding: "6px",
+                border: "none",
+              }}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* سجل النشاط */}
+      {showLog && (
+        <div
+          style={{
+            position: "absolute",
+            top: 70,
+            right: 20,
+            width: "300px",
+            maxHeight: "400px",
+            overflowY: "auto",
+            background: "#fff",
+            borderRadius: "10px",
+            padding: "10px",
+            zIndex: 15,
+          }}
+        >
+          <h4>سجل النشاط:</h4>
+          {activityLog.length === 0 ? (
+            <p>لا يوجد بلاغات أو طلبات مساعدة</p>
+          ) : (
+            activityLog.map((item, index) => (
+              <div key={index} style={{ marginBottom: 8 }}>
+                <strong>{item.type}:</strong> {item.content}
+                <br />
+                <small>{item.timestamp}</small>
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>
