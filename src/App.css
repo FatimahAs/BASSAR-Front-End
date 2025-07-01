@@ -29,6 +29,14 @@ html, body, #root {
 .mapboxgl-ctrl-directions .mapboxgl-ctrl {
   float: right;
 }
+.mapbox-directions-component-keyline {
+  direction: rtl;
+  text-align: right;
+}
+.mapbox-directions-component-keyline input {
+  direction: rtl;
+  text-align: right;
+}
 @media (max-width: 768px) {
   .directions-control-directions {
     display: none !important;

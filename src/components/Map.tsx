@@ -72,8 +72,8 @@ const TripNavigator: React.FC = () => {
         originInput.setAttribute("placeholder", "اختر نقطة البداية");
         destinationInput.setAttribute("placeholder", "اختر الوجهة");
         drivingLabel.textContent = "القيادة"; 
-        trafficLabel.textContent = "بالسيارة";   
-        walkinggLabel.textContent = "سيرًا على الأقدام";
+        trafficLabel.textContent = "تفادى الازدحام";   
+        walkinggLabel.textContent = "سيرًا ";
         cyclingLabel.textContent = "بالدراجة";    
 
         const clearButton = document.querySelector(".mapboxgl-ctrl-directions-clear");
@@ -220,7 +220,7 @@ const TripNavigator: React.FC = () => {
     padding: "10px 20px",
     fontWeight: "bold",
     borderRadius: "8px",
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#F8D203",
     color: "#fff",
     border: "none",
     cursor: "pointer",
@@ -246,6 +246,7 @@ const TripNavigator: React.FC = () => {
   }}
   onClick={handleSaveLocation}
 >
+ <img src="../assets/Risk.svg"></img>
   بلِّغ
 </button>
 
