@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl, { Map } from "mapbox-gl";
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
-import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { FaExclamationTriangle, FaHandsHelping } from "react-icons/fa";
 import { RiChatHistoryLine } from "react-icons/ri";
+import { useNavigate } from "react-router";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYWlzaGFoMTAxIiwiYSI6ImNtY2lvampibzE3cHUybHF2czJtY2swYWwifQ.rX3EFhb68jdKgbLqd2GUuA";
@@ -24,6 +24,8 @@ const TripNavigator: React.FC = () => {
   const directionsRef = useRef<InstanceType<typeof MapboxDirections> | null>(
     null
   );
+
+  const navigate = useNavigate();
 
   const [showReportOptions, setShowReportOptions] = useState(false);
   const [showHelpOptions, setShowHelpOptions] = useState(false);
@@ -126,31 +128,7 @@ const TripNavigator: React.FC = () => {
   };
 
   const handleHelpRequest = (type: string) => {
-    if (!navigator.geolocation || !mapRef.current) return;
-
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const coords: [number, number] = [
-        pos.coords.longitude,
-        pos.coords.latitude,
-      ];
-
-      new mapboxgl.Marker({ color: "green" })
-        .setLngLat(coords)
-        .setPopup(new mapboxgl.Popup().setText(`طلب مساعدة: ${type}`))
-        .addTo(mapRef.current!);
-
-      setActivityLog((prev) => [
-        ...prev,
-        {
-          type: "مساعدة",
-          content: type,
-          coords,
-          timestamp: new Date().toLocaleString(),
-        },
-      ]);
-
-      setShowHelpOptions(false);
-    });
+    navigate(`/services/${type}`);
   };
 
   return (
