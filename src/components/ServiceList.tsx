@@ -50,7 +50,7 @@ export default function ServiceList() {
     return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
   };
 
-  // إرسال الطلب
+  // send req
   const sendRequest = async (helper: HelperUser) => {
     if (!userLocation) return;
 
