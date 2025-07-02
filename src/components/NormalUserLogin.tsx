@@ -1,21 +1,20 @@
-import React, { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router";
 
 export default function NormalUserLogin() {
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    const res = await fetch(
-      "https://683f24371cd60dca33de6ad4.mockapi.io/normaluser"
-    );
+    const res = await fetch("https://683f24371cd60dca33de6ad4.mockapi.io/normaluser");
     const users = await res.json();
     const found = users.find(
-      (u: any) => u.phone === phone && u.password === password
+      (u: any) => u.email === email && u.password === password
     );
     if (found) {
+      localStorage.setItem("normalUser", JSON.stringify(found));
       navigate("/map");
     } else {
       alert("بيانات غير صحيحة");
@@ -30,13 +29,13 @@ export default function NormalUserLogin() {
         </h2>
         <form onSubmit={handleLogin} className="space-y-6">
           <input
-            type="tel"
-            placeholder="رقم التواصل"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            type="email"
+            placeholder="البريد الإلكتروني"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="input"
             required
-            autoComplete="tel"
+            autoComplete="email"
           />
           <input
             type="password"

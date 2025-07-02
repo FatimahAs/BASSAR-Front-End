@@ -52,30 +52,34 @@ export default function ServiceList() {
 
   // إرسال الطلب
   const sendRequest = async (helper: HelperUser) => {
-    if (!userLocation) return;
+  if (!userLocation) return;
 
-    const name = prompt("اكتب اسمك:");
-    const phone = prompt("اكتب رقم التواصل:");
+  const userData = localStorage.getItem("normalUser");
+  if (!userData) {
+    alert("لم يتم العثور على بيانات المستخدم");
+    return;
+  }
 
-    if (!name || !phone) return;
+  const { name, phone } = JSON.parse(userData);
 
-    await fetch("https://6823a18e65ba0580339768c2.mockapi.io/ServiceList", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        phone,
-        lat: userLocation.lat,
-        lng: userLocation.lng,
-        serviceType,
-        helperId: helper.id,
-        status: "pending",
-      }),
-    });
+  await fetch("https://6823a18e65ba0580339768c2.mockapi.io/ServiceList", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      phone,
+      lat: userLocation.lat,
+      lng: userLocation.lng,
+      serviceType,
+      helperId: helper.id,
+      status: "pending",
+    }),
+  });
 
-    alert("تم إرسال الطلب للمساعد");
-    navigate(`/map`);
-  };
+  alert("تم إرسال الطلب للمساعد");
+  navigate(`/map`);
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">

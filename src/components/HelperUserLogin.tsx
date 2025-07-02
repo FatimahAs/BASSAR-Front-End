@@ -1,19 +1,17 @@
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router";
 
 export default function HelperUserLogin() {
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    const res = await fetch(
-      "https://6823a18e65ba0580339768c2.mockapi.io/userHelper"
-    );
+    const res = await fetch("https://683f24371cd60dca33de6ad4.mockapi.io/userHelper");
     const helpers = await res.json();
     const found = helpers.find(
-      (h: any) => h.phone === phone && h.password === password
+      (h: any) => h.email === email && h.password === password
     );
     if (found) {
       navigate(`/helper/page/${found.id}`);
@@ -30,13 +28,13 @@ export default function HelperUserLogin() {
         </h2>
         <form onSubmit={handleLogin} className="space-y-6">
           <input
-            type="tel"
-            placeholder="رقم التواصل"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            type="email"
+            placeholder="البريد الإلكتروني"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="input"
             required
-            autoComplete="tel"
+            autoComplete="email"
           />
           <input
             type="password"

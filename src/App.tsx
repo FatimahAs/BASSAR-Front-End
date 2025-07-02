@@ -13,7 +13,7 @@ import ServiceList from "./components/ServiceList";
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100 p-6">
+      <div className="min-h-screen bg-gray-100">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/map" element={<TripNavigator />} />
