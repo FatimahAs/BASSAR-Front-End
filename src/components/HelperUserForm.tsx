@@ -64,7 +64,7 @@ export default function HelperUserForm() {
           const data = await res.json();
           navigate(`/helper/page/${data.id}`);
         },
-        (err) => {
+        () => {
           setError("يرجى السماح بمشاركة الموقع الجغرافي.");
           setLoading(false);
         }
