@@ -128,7 +128,7 @@ const TripNavigator: React.FC = () => {
   };
 
   const handleHelpRequest = (type: string) => {
-    navigate(`/services/${type}`);
+    navigate(`/service-list/${encodeURIComponent(type)}`);
   };
 
   return (

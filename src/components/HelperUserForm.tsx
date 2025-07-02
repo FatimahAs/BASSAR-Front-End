@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate, Link } from "react-router";
 
 export default function HelperUserForm() {
@@ -10,39 +10,83 @@ export default function HelperUserForm() {
     serviceType: "سطحة",
     price: "",
   });
+
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const res = await fetch(
-        "https://6823a18e65ba0580339768c2.mockapi.io/userHelper",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+    setError(null);
+    setLoading(true);
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.password ||
+      !formData.serviceType ||
+      !formData.price
+    ) {
+      setError("يرجى تعبئة جميع الحقول");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const payload = {
             ...formData,
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
-          }),
+          };
+
+          const res = await fetch(
+            "https://683f24371cd60dca33de6ad4.mockapi.io/userHelper",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            }
+          );
+
+          if (!res.ok) {
+            setError("فشل التسجيل. حاول لاحقاً.");
+            setLoading(false);
+            return;
+          }
+
+          const data = await res.json();
+          navigate(`/helper/page/${data.id}`);
+        },
+        (err) => {
+          setError("يرجى السماح بمشاركة الموقع الجغرافي.");
+          setLoading(false);
         }
       );
-      const data = await res.json();
-      navigate(`/helper/page/${data.id}`);
-    });
+    } catch (err) {
+      setError("حدث خطأ أثناء الإرسال.");
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-400 via-teal-500 to-blue-600 flex items-center justify-center p-6">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-8">
-        <h2 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
+        <h2 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">
           تسجيل مساعد جديد
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+
+        {error && (
+          <p className="mb-4 text-red-600 text-sm text-center">{error}</p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             name="name"
             value={formData.name}
@@ -50,7 +94,6 @@ export default function HelperUserForm() {
             placeholder="الاسم الكامل"
             className="input"
             required
-            autoComplete="name"
           />
           <input
             name="email"
@@ -60,16 +103,15 @@ export default function HelperUserForm() {
             placeholder="البريد الإلكتروني"
             className="input"
             required
-            autoComplete="email"
           />
           <input
             name="phone"
+            type="tel"
             value={formData.phone}
             onChange={handleChange}
             placeholder="رقم التواصل"
             className="input"
             required
-            autoComplete="tel"
           />
           <input
             name="password"
@@ -79,7 +121,6 @@ export default function HelperUserForm() {
             placeholder="كلمة المرور"
             className="input"
             required
-            autoComplete="new-password"
           />
           <select
             name="serviceType"
@@ -87,29 +128,34 @@ export default function HelperUserForm() {
             onChange={handleChange}
             className="input"
           >
-            <option>سطحة</option>
-            <option>بطارية</option>
-            <option>بنشر</option>
-            <option>وقود</option>
-            <option>مساعد شخصي</option>
+            <option value="سطحة">سطحة</option>
+            <option value="بطارية">بطارية</option>
+            <option value="بنشر">بنشر</option>
+            <option value="وقود">وقود</option>
+            <option value="مساعد شخصي">مساعد شخصي</option>
           </select>
           <input
             name="price"
             value={formData.price}
             onChange={handleChange}
             placeholder="سعر الخدمة بالريال"
-            className="input"
-            required
             type="number"
+            className="input"
             min={0}
+            required
           />
+
           <button
             type="submit"
-            className="w-full py-3 rounded-lg bg-gradient-to-r from-teal-600 to-blue-700 text-white font-semibold text-lg hover:from-teal-700 hover:to-blue-800 transition"
+            disabled={loading}
+            className={`w-full py-3 rounded-lg bg-gradient-to-r from-teal-600 to-blue-700 text-white font-semibold text-lg transition ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:from-teal-700 hover:to-blue-800"
+            }`}
           >
-            تسجيل
+            {loading ? "جاري التسجيل..." : "تسجيل"}
           </button>
         </form>
+
         <p className="mt-6 text-center text-gray-700">
           لديك حساب؟{" "}
           <Link
