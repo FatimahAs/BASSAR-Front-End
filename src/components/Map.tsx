@@ -4,6 +4,9 @@ import mapboxgl, { Map } from "mapbox-gl";
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import camelWarningIcon from '../assets/den3.png';
+import rockfallIcon from "../assets/den2.png";
+import dangerIcon from "../assets/den1.png";
+
 
    mapboxgl.accessToken =
   "pk.eyJ1IjoiYWlzaGFoMTAxIiwiYSI6ImNtY2lvampibzE3cHUybHF2czJtY2swYWwifQ.rX3EFhb68jdKgbLqd2GUuA";
@@ -91,18 +94,41 @@ const TripNavigator: React.FC = () => {
         }
       });
     });
-    //add camel crossing warnings 
- const camelWarningCoordinates: [number, number] = [46.5, 24.7];
- const camelWarningEl = document.createElement('div');
-    camelWarningEl.style.backgroundImage = `url(${camelWarningIcon})`;
-    camelWarningEl.style.width = '32px';
-    camelWarningEl.style.height = '32px';
-    camelWarningEl.style.backgroundSize = 'contain';
-    camelWarningEl.style.backgroundRepeat = 'no-repeat';
-     new mapboxgl.Marker(camelWarningEl)
-      .setLngLat(camelWarningCoordinates)
-      .setPopup(new mapboxgl.Popup().setText('تحذير: عبور جمال'))
-      .addTo(mapRef.current!);
+    //add warnings on map
+const warningLocations: { coordinates: [number, number]; message: string; icon : string }[] = [
+    { coordinates: [46.5, 24.7], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.48, 24.71], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.49, 24.68], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.51, 24.72], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.52, 24.69], message: "تحذير: عبور جمال" , icon: camelWarningIcon},
+    { coordinates: [46.47, 24.7],  message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.6, 24.8], message: "تحذير: حيوانات سائبة", icon: dangerIcon  },
+    { coordinates: [46.55, 24.75], message: "تحذير: منطقة خطرة", icon: dangerIcon },
+    { coordinates: [46.53, 24.74], message: "تحذير: منطقة خطرة", icon: dangerIcon  },
+    { coordinates: [46.57, 24.76], message: "تحذير: منطقة خطرة", icon: dangerIcon },
+    { coordinates: [46.56, 24.73], message: "تحذير: منطقة خطرة", icon: dangerIcon  },
+    { coordinates: [46.54, 24.76], message: "تحذير: منطقة خطرة", icon: dangerIcon  },
+    { coordinates: [46.58, 24.75], message: "تحذير: منطقة خطرة" , icon: dangerIcon },
+    { coordinates: [46.68, 24.68], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon },
+    { coordinates: [46.67, 24.69], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon  },
+    { coordinates: [46.66, 24.685], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon  },
+    { coordinates: [46.69, 24.695], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon   },
+    { coordinates: [46.70, 24.69], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon   },
+];
+
+warningLocations.forEach((location) => {
+  const el = document.createElement("div");
+  el.style.backgroundImage = `url(${location.icon})`;
+  el.style.width = "32px";
+  el.style.height = "32px";
+  el.style.backgroundSize = "contain";
+  el.style.backgroundRepeat = "no-repeat";
+
+  new mapboxgl.Marker(el)
+    .setLngLat(location.coordinates)
+    .setPopup(new mapboxgl.Popup().setText(location.message))
+    .addTo(mapRef.current!);
+});
 
     // Set initial user location 
     if (navigator.geolocation) {
