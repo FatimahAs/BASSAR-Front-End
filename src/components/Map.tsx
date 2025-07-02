@@ -133,8 +133,15 @@ const TripNavigator: React.FC = () => {
         }
       );
     }
+      return () => {
+    mapRef.current?.remove();
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+    }
+    observerRef.current?.disconnect();
+  };
 
-  })
+  },[])
   // Start trip with live location tracking
   const handleStartTrip = () => {
     if (!navigator.geolocation || !mapRef.current) {
