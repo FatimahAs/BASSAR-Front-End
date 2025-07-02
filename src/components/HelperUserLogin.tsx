@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router";
 
 export default function HelperUserLogin() {
@@ -13,7 +13,7 @@ export default function HelperUserLogin() {
     );
     const helpers = await res.json();
     const found = helpers.find(
-      (h: any) => h.phone === phone && h.password === password
+      (h: { phone: string; password: string; }) => h.phone === phone && h.password === password
     );
     if (found) {
       navigate(`/helper/page/${found.id}`);

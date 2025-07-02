@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router";
 
 export default function NormalUserLogin() {
@@ -13,7 +13,7 @@ export default function NormalUserLogin() {
     );
     const users = await res.json();
     const found = users.find(
-      (u: any) => u.phone === phone && u.password === password
+      (u: { phone: string; password: string; }) => u.phone === phone && u.password === password
     );
     if (found) {
       navigate("/map");
