@@ -3,9 +3,11 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl, { Map } from "mapbox-gl";
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
-mapboxgl.accessToken =
+import camelWarningIcon from '../assets/den3.png';
+
+   mapboxgl.accessToken =
   "pk.eyJ1IjoiYWlzaGFoMTAxIiwiYSI6ImNtY2lvampibzE3cHUybHF2czJtY2swYWwifQ.rX3EFhb68jdKgbLqd2GUuA";
-mapboxgl.setRTLTextPlugin(
+  mapboxgl.setRTLTextPlugin(
   'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
   () => {
     console.log('RTL text plugin loaded');
@@ -21,23 +23,11 @@ const TripNavigator: React.FC = () => {
   const directionsRef = useRef<InstanceType<typeof MapboxDirections> | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
 
-
-  const [savedLocations, setSavedLocations] = useState<[number, number][]>([]);
   const [hasZoomedOnce, setHasZoomedOnce] = useState(false);
-
-  // Load saved locations from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("savedLocations");
-    if (stored) {
-      const parsed: [number, number][] = JSON.parse(stored);
-      setSavedLocations(parsed);
-    }
-  }, []);
 
   // Initialize map and add saved location markers
   useEffect(() => {
     if (!mapContainerRef.current) return;
-
     // Initialize Mapbox map
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -45,7 +35,6 @@ const TripNavigator: React.FC = () => {
       center: [46.6753, 24.7136],
       zoom: 6,
     });
-
     // Initialize directions control
     const directions = new MapboxDirections({
       accessToken: mapboxgl.accessToken,
@@ -56,7 +45,6 @@ const TripNavigator: React.FC = () => {
     },{flyTo: false});
     directionsRef.current = directions;
     mapRef.current.addControl(directions, "top-left");
-     //for="mapbox-directions-profile-driving-traffic" for="mapbox-directions-profile-walking" for="mapbox-directions-profile-cycling"
     // MutationObserver to detect when inputs exist and set placeholders
     observerRef.current = new MutationObserver(() => {
       const originContainer = document.getElementById("mapbox-directions-origin-input");
@@ -103,16 +91,20 @@ const TripNavigator: React.FC = () => {
         }
       });
     });
+    //add camel crossing warnings 
+ const camelWarningCoordinates: [number, number] = [46.5, 24.7];
+ const camelWarningEl = document.createElement('div');
+    camelWarningEl.style.backgroundImage = `url(${camelWarningIcon})`;
+    camelWarningEl.style.width = '32px';
+    camelWarningEl.style.height = '32px';
+    camelWarningEl.style.backgroundSize = 'contain';
+    camelWarningEl.style.backgroundRepeat = 'no-repeat';
+     new mapboxgl.Marker(camelWarningEl)
+      .setLngLat(camelWarningCoordinates)
+      .setPopup(new mapboxgl.Popup().setText('تحذير: عبور جمال'))
+      .addTo(mapRef.current!);
 
-    // Add markers for saved locations
-    savedLocations.forEach((loc) => {
-      new mapboxgl.Marker({ color: "green" })
-        .setLngLat(loc)
-        .setPopup(new mapboxgl.Popup().setText("Saved Location"))
-        .addTo(mapRef.current!);
-    });
-
-    // Set initial user location if possible
+    // Set initial user location 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -142,16 +134,7 @@ const TripNavigator: React.FC = () => {
       );
     }
 
-    // Cleanup function
-    return () => {
-      mapRef.current?.remove();
-      if (watchIdRef.current !== null) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
-      }
-      observerRef.current?.disconnect();
-    };
-  }, [savedLocations]);
-
+  })
   // Start trip with live location tracking
   const handleStartTrip = () => {
     if (!navigator.geolocation || !mapRef.current) {
@@ -185,37 +168,14 @@ const TripNavigator: React.FC = () => {
       { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 }
     );
   };
-
-  // Save current location and add marker
-  const handleSaveLocation = () => {
-    if (!navigator.geolocation || !mapRef.current) return;
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const coords: [number, number] = [pos.coords.longitude, pos.coords.latitude];
-        const updated = [...savedLocations, coords];
-        setSavedLocations(updated);
-        localStorage.setItem("savedLocations", JSON.stringify(updated));
-
-        new mapboxgl.Marker({ color: "green" })
-          .setLngLat(coords)
-          .setPopup(new mapboxgl.Popup().setText("Saved Location"))
-          .addTo(mapRef.current!);
-      },
-      (err) => {
-        console.error("Error saving location:", err);
-      }
-    );
-  };
-
-  return (
+ return (
     <div>
       <div ref={mapContainerRef} style={{ width: "100%", height: "100vh" }} />
 <button
   style={{
     position: "absolute",
     bottom: 20,
-    right: 20, // instead of left
+    right: 20, 
     zIndex: 1,
     padding: "10px 20px",
     fontWeight: "bold",
@@ -228,29 +188,8 @@ const TripNavigator: React.FC = () => {
   onClick={handleStartTrip}
 >
   أبدأ الرحلة
-</button>
-
-<button
-  style={{
-    position: "absolute",
-    bottom: 20,
-    right: 150, // instead of left
-    zIndex: 1,
-    padding: "10px 20px",
-    fontWeight: "bold",
-    borderRadius: "8px",
-    backgroundColor: "#27ae60",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-  }}
-  onClick={handleSaveLocation}
->
- <img src="../assets/Risk.svg"></img>
-  بلِّغ
-</button>
-
-    </div>
+  </button>
+  </div>
   );
 };
 
