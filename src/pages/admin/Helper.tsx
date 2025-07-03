@@ -5,7 +5,7 @@ import {
   LogOut,
   Plus,
 } from "lucide-react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 
 type Trip = {
   id: number;
