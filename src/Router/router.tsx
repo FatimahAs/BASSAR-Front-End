@@ -7,7 +7,7 @@ import Helper from "../pages/admin/Helper"
 
 import Signin from "../pages/Signin";
 import AdminDashboard from "../pages/admin/Dashboard";
-//import Signup from "../pages/Signup";
+import Signup from "../pages/Signup";
 
 
 
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
        { path: "listhelper", element: <Helper /> },
 	
 	  { path: "signin", element: <Signin /> },
-	//  {path: "signup", element: <Signup/>}
+	  {path: "signup", element: <Signup/>}
     ],
   },
 ]);
