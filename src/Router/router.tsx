@@ -8,6 +8,8 @@ import Helper from "../pages/admin/Helper"
 import Signin from "../pages/Signin";
 import AdminDashboard from "../pages/admin/Dashboard";
 import Signup from "../pages/Signup";
+import HelperDashboard from "../pages/helper/HelperDashboard";
+import UserDashboard from "../pages/user/UserDashboard";
 
 
 
@@ -33,7 +35,9 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
          { path: "admin", element: <AdminDashboard /> },
       { path: "listuser", element: <ManageUsers /> },
-       { path: "listhelper", element: <Helper /> },
+      { path: "listhelper", element: <Helper /> },
+      { path: "helper", element: <HelperDashboard /> },
+         { path: "user", element: <UserDashboard /> },
 	
 	  { path: "signin", element: <Signin /> },
 	  {path: "signup", element: <Signup/>}
