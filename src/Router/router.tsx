@@ -5,7 +5,7 @@ import React from "react";
 import ManageUsers from "../pages/ManageUsers";
 import Helper from "../pages/Helper"
 
-//import Signin from "../pages/Signin";
+import Signin from "../pages/Signin";
 //import Signup from "../pages/Signup";
 
 
@@ -33,7 +33,7 @@ const router = createBrowserRouter([
       { path: "listuser", element: <ManageUsers /> },
        { path: "listhelper", element: <Helper /> },
 	
-	//  { path: "signin", element: <Signin /> },
+	  { path: "signin", element: <Signin /> },
 	//  {path: "signup", element: <Signup/>}
     ],
   },
