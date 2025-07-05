@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "../../components/ui/Card";
 import { Button } from "../../components/ui/button";
-import { ArrowUpRight, PlusCircle } from "lucide-react";
+import { ArrowUpRight, Bell } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -14,45 +14,10 @@ import {
   Line,
   Legend,
 } from "recharts";
-import Sidebar from "../../components/Sidebar";
 
-const userGrowthData = [
-  { name: "Jan", users: 1200 },
-  { name: "Feb", users: 1900 },
-  { name: "Mar", users: 3000 },
-  { name: "Apr", users: 1800 },
-  { name: "May", users: 2000 },
-  { name: "Jun", users: 1500 },
-];
 
-const highestRisksData = [
-  { name: "Camel", value: 20 },
-  { name: "Rockfall", value: 25 },
-  { name: "Fog", value: 15 },
-  { name: "Narrow", value: 30 },
-  { name: "Wet Roads", value: 40 },
-  { name: "Fuel", value: 18 },
-  { name: "Signal", value: 10 },
-];
-
-const highestRiskCitiesData = [
-  { name: "Taif", value: 1800 },
-  { name: "Madinah", value: 2900 },
-  { name: "Abha", value: 3100 },
-  { name: "Tabuk", value: 1600 },
-  { name: "Hail", value: 1200 },
-  { name: "Jazan", value: 1300 },
-];
-
-const riskAccuracyData = [
-  { name: "Camel", value: 20 },
-  { name: "Rockfall", value: 22 },
-  { name: "Fog", value: 15 },
-  { name: "Narrow", value: 30 },
-  { name: "Wet Roads", value: 40 },
-  { name: "Fuel", value: 18 },
-  { name: "Signal", value: 10 },
-];
+import {userGrowthData,highestRisksData,highestRiskCitiesData,riskAccuracyData} from "../../types/chart"
+import AdminSidebar from "../../components/AdminSidebar";
 
 
 
@@ -63,17 +28,17 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex text-gray-800">
-      <Sidebar/>
+      <AdminSidebar/>
 
       {/* Main content */}
       <main className="flex-1 p-6 space-y-6">
         <div className="flex justify-between items-start flex-wrap gap-4">
           <div>
             <h2 className="text-xl font-bold">Welcome Admin 👋</h2>
-            <p className="text-sm text-gray-500">Track activity, trends, and popular destinations in real time</p>
+            <p className="text-sm text-gray-500">لتكن على بصيرة</p>
           </div>
-          <Button className="bg-yellow-400 text-black flex gap-2 items-center">
-            <PlusCircle size={18} /> Create a trip
+          <Button className="bg-yellow-400 text-black rounded-full flex gap-2 items-center">
+           <Bell color="#ffffff" />
           </Button>
         </div>
 

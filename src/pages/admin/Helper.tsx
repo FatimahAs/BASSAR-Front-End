@@ -1,77 +1,41 @@
 import React, { useState } from "react";
-import {
-  Menu,
-  X,
-  LogOut,
-  Plus,
-} from "lucide-react";
-import Sidebar from "../../components/Sidebar";
-
+import { Button } from "../../components/ui/button";
+import AdminSidebar from "../../components/AdminSidebar";
+import { ArrowUpRight, Bell,SaudiRiyal } from "lucide-react";
 type Trip = {
   id: number;
   title: string;
-  location: string;
-  tags: string[];
+  price: string;
   image: string;
 };
 
 const trips: Trip[] = [
   {
     id: 1,
-    title: "Abha",
-    location: "Abha, Saudi Arabia",
-    tags: ["Mountains", "City"],
-    image: "/images/abha.jpg",
+    title: "سطحة",
+    price: "200",
+    image: "/assets/tow-truck.png",
   },
   {
     id: 2,
-    title: "Dammam",
-    location: "Eastern Province, Saudi Arabia",
-    tags: ["Budget", "Beach"],
-    image: "/images/dammam.jpg",
+    title: "وقود",
+    price: "50",
+    image: "/assets/gas-pump.png",
   },
   {
     id: 3,
-    title: "Jazan",
-    location: "Eastern Province, Saudi Arabia",
-    tags: ["Luxury", "Beach"],
-    image: "/images/jazan.jpg",
+    title: "بطارية سيارة",
+    price: "300",
+    image: "/assets/accumulator.png",
+
   },
   {
     id: 4,
-    title: "Taif",
-    location: "Siberia, Russia",
-    tags: ["Sports", "Adventurous"],
-    image: "/images/taif.jpg",
-  },
-  {
-    id: 5,
-    title: "Hofuf",
-    location: "Eastern Province, Saudi Arabia",
-    tags: ["Beach", "Adventurous"],
-    image: "/images/hofuf.jpg",
-  },
-  {
-    id: 6,
-    title: "Madinah",
-    location: "Al Madinah Region, Saudi Arabia",
-    tags: ["Sports", "Adventurous"],
-    image: "/images/madinah.jpg",
-  },
-  {
-    id: 7,
-    title: "AlUla",
-    location: "Al Madinah Region, Saudi Arabia",
-    tags: ["Mountains", "Budget"],
-    image: "/images/alula.jpg",
-  },
-  {
-    id: 8,
-    title: "Al-Ahsa Oasis",
-    location: "Eastern Province, Saudi Arabia",
-    tags: ["Solo travel", "City"],
-    image: "/images/alhasa.jpg",
-  },
+    title: "شخص للمساعدة ",
+    price: "50-500",
+    image: "/assets/man.png",
+  }
+
 ];
 
 export default function Helper() {
@@ -79,27 +43,33 @@ export default function Helper() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-       <Sidebar/>
+       <AdminSidebar/>
 
       {/* Content */}
       <main className=" flex-1 p-4 md:p-8">
-  
+   <div className="flex justify-between items-start flex-wrap mb-5 gap-4">
+          <div>
+            <h2 className="text-xl font-bold">Welcome Admin 👋</h2>
+        
+          </div>
+          <Button className="bg-yellow-400 text-black rounded-full flex gap-2 items-center">
+           <Bell color="#ffffff" />
+          </Button>
+        </div>
 
         {/* Trips Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {trips.map((trip) => (
             <div
               key={trip.id}
               className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden relative"
             >
-              <div
-                className="h-36 bg-cover bg-center"
-                style={{ backgroundImage: `url(${trip.image})` }}
-              />
-              <div className="p-4">
+              <div className="flex justify-center items-center m-3"><img src={ trip.image} className="w-20 h-20 "/></div>
+              <div className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden relative">
+                 <div className="p-4">
                 <h2 className="text-lg font-semibold">{trip.title}</h2>
-                <p className="text-sm text-gray-500">{trip.location}</p>
-                <div className="mt-2 flex flex-wrap gap-1">
+                <div className="mt-2 flex flex-row justify-between items-center"><p className="text-lg text-gray-500">{trip.price}</p><SaudiRiyal color="#f8d203" /></div>
+                {/*<div className="mt-2 flex flex-wrap gap-1">
                   {trip.tags.map((tag) => (
                     <span
                       key={tag}
@@ -108,8 +78,11 @@ export default function Helper() {
                       {tag}
                     </span>
                   ))}
-                </div>
+                </div>*/}
               </div>
+                </div>
+
+
               <span className="absolute top-2 right-2 text-xs bg-yellow-400 text-black px-2 py-0.5 rounded-full">
                 New
               </span>
@@ -118,7 +91,7 @@ export default function Helper() {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center mt-6 space-x-2">
+        {/*<div className="flex justify-center mt-6 space-x-2">
           <button className="px-3 py-1 bg-white border border-[#d8d0d090] rounded hover:bg-gray-100">
             Previous
           </button>
@@ -137,7 +110,7 @@ export default function Helper() {
           <button className="px-3 py-1 bg-white border rounded border-[#d8d0d090] hover:bg-gray-100">
             Next
           </button>
-			  </div>
+			  </div>*/}
 			  
       </main>
     </div>

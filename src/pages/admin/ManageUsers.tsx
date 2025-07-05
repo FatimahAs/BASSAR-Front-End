@@ -1,5 +1,5 @@
 import React from "react";
-import Sidebar from "../../components/Sidebar";
+import AdminSidebar from "../../components/AdminSidebar";
 
 type User = {
   name: string;
@@ -80,7 +80,7 @@ const users: User[] = [
 const ManageUsers: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-    <Sidebar/>
+    <AdminSidebar/>
 
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-8">
