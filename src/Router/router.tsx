@@ -10,6 +10,10 @@ import AdminDashboard from "../pages/admin/Dashboard";
 import Signup from "../pages/Signup";
 import HelperDashboard from "../pages/helper/HelperDashboard";
 import UserDashboard from "../pages/user/UserDashboard";
+import HelperHistory from "../pages/helper/HelperHistory";
+import HelpList from "../pages/helper/HelpList";
+import UserList from "../pages/user/UserList";
+import UserHistory from "../pages/user/UserHistory";
 
 
 
@@ -36,8 +40,14 @@ const router = createBrowserRouter([
          { path: "admin", element: <AdminDashboard /> },
       { path: "listuser", element: <ManageUsers /> },
       { path: "listhelper", element: <Helper /> },
+
       { path: "helper", element: <HelperDashboard /> },
-         { path: "user", element: <UserDashboard /> },
+      { path: "helphistory", element: <HelperHistory /> },
+      { path: "helplist", element: <HelpList /> },
+
+      { path: "user", element: <UserDashboard /> },
+         { path: "userhistory", element: <UserHistory /> },
+      { path: "userlist", element: <UserList /> },
 	
 	  { path: "signin", element: <Signin /> },
 	  {path: "signup", element: <Signup/>}
