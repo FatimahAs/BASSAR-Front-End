@@ -8,12 +8,12 @@ export default function SignUpPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-90 via-yellow-100 to-white-200 px-4">
       <div className="relative bg-white/60 backdrop-blur-xl border border-white/70 rounded-3xl shadow-xl w-full max-w-md p-8 md:p-10">
        
-        <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center">
-         
-        </h2>
-        <p className="text-[#272343] text-center mt-1 mb-6 text-sm">
-          لتكن على بصيرة 
-        </p>
+        <div className="flex flex-col justify-center items-center">
+          <img src="/assets/logo-remove.png" alt="logo" className="w-30" />
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center">بصّار</h2>
+        </div>
+        
+        <p className="text-[#272343] text-center mt-1 mb-6 text-sm"> لتكن على بصيرة </p>
 
        
         <form className="space-y-4">

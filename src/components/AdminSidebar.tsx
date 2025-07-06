@@ -21,7 +21,11 @@ export default function AdminSidebar() {
       )}
       {/* Sidebar */}
       <aside className="w-64 bg-white p-6 border-r border-[#d8d0d090] hidden md:block">
-        <h1 className="text-2xl font-bold text-blue-600 mb-10">بصّــار</h1>
+        <div className="flex justify-center items-center">
+           <img src="/assets/logo.png" className=" w-25 mb-9" />
+          </div>
+
+       
         <nav className="space-y-3">
 				  <Link to="/admin">
 					   <Button variant="default" className="w-full bg-yellow-400 text-black">
