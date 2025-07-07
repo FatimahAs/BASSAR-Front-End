@@ -25,7 +25,7 @@ export default function SignUpPage() {
             <input
               type="tel"
               placeholder=""
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
           </div>
@@ -38,13 +38,13 @@ export default function SignUpPage() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder=""
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute left-3 top-8 text-[#272343] hover:text-gray-700"
+              className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
             >
               {showPassword ? (
                 <EyeSlashIcon className="w-5 h-5" />
@@ -58,7 +58,7 @@ export default function SignUpPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-full transition"
+            className="w-full mt-5 bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-xl transition"
           >
              تسجيل الدخول
           </button>

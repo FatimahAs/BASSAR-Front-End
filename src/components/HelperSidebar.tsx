@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Button } from "./ui/button";
-import { Link } from "react-router"
+import { Link,useLocation } from "react-router"
 import {  LogOut } from "lucide-react";
 
 export default function AdminSidebar() {
 	 const [menuOpen, setMenuOpen] = useState(false);
-
+  const location = useLocation();
+  const currentPath = location.pathname;
 
 
   const handleOverlayClick = () => {
@@ -26,34 +27,65 @@ export default function AdminSidebar() {
           </div>
 
        
-        <nav className="space-y-3">
-				  <Link to="/helper">
-					   <Button variant="default" className="w-full bg-yellow-400 text-black">
-            لوحة التحكم
-          </Button>
-				  </Link>
-         <Link to="/helplist">
-          <Button variant="ghost" className="w-full justify-start">
-             المساعدات
-            </Button>
-          </Link>
-				  <Link to="/helphistory">
-					   <Button variant="ghost" className="w-full justify-start">
-              السجل
-          </Button>
-				  </Link>
-				      <div className="absolute mt-10 right-6 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">
-            A
-          </div>
-          <div>
-            <p className="font-semibold">Helper</p>
-            <p className="text-xs text-gray-400">helper@helper.com</p>
-          </div>
-          <LogOut className="mr-auto text-red-500 cursor-pointer" />
-        </div>
-        </nav>
+      
     
+        
+
+ <nav className="space-y-3 relative">
+      <Link to="/helper">
+        <Button
+          variant={currentPath === "/helper" ? "default" : "ghost"}
+          className={`w-full ${
+            currentPath === "/helper"
+              ? "bg-yellow-400 text-black"
+              : "justify-start"
+          }`}
+        >
+          لوحة التحكم
+        </Button>
+      </Link>
+      <Link to="/helplist">
+        <Button
+          variant={currentPath === "/helplist" ? "default" : "ghost"}
+          className={`w-full ${
+            currentPath === "/helplist"
+              ? "bg-yellow-400 text-black"
+              : "justify-start"
+          }`}
+        >
+         المساعدات
+        </Button>
+      </Link>
+      <Link to="/helphistory">
+        <Button
+          variant={currentPath === "/helphistory" ? "default" : "ghost"}
+          className={`w-full ${
+            currentPath === "/helphistory"
+              ? "bg-yellow-400 text-black"
+              : "justify-start"
+          }`}
+        >
+         السجل
+        </Button>
+      </Link>
+
+      <div className="absolute mt-10 right-6 flex items-center space-x-3">
+        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">
+          A
+        </div>
+        <div>
+          <p className="font-semibold">Helper</p>
+          <p className="text-xs text-gray-400">helper@helper.com</p>
+        </div>
+        <LogOut className="mr-auto text-red-500 cursor-pointer" />
+      </div>
+    </nav>
+
+
+
+
+
+
       </aside>
 	 </div>
 
