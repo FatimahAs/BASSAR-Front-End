@@ -3,7 +3,7 @@ import navLogo from "../../public/assets/logo-remove.png";
 import { Link } from "react-router";
 function Nav() {
   return (
-    <nav className="bg-[#1d1a33] shadow-md px-6 py-4 ">
+    <nav className="bg-white/10 backdrop-blur-xl shadow-md px-6 py-4 border-b border-b-white/20 ">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* الشعار */}
         <div className="flex items-center ">

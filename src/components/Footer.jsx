@@ -89,11 +89,10 @@ function Footer() {
           </div>
         </div>
 
-        <div className="text-center mt-6 text-yellow-300">
-          &copy; {new Date().getFullYear()} SafePath Inc. All rights reserved.
+        <div dir="ltr" className="text-center mt-6 text-yellow-300">
+          &copy; {new Date().getFullYear()} بّصار
         </div>
 
-        {/* زر الرجوع للأعلى مع حركة ناعمة من اليمين */}
         <button
           onClick={scrollToTop}
           className={`fixed bottom-6 right-10 transform transition-all duration-500 ease-in-out 

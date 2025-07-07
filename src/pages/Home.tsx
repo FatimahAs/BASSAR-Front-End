@@ -4,6 +4,7 @@ import Nav from "../components/Nav";
 import Hero from "../components/Hero";
 import Timeline from "../components/Timeline";
 import Footer from "../components/Footer";
+import MapComponent from "../components/MapComponent.jsx";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <div className="min-h-screen bg-[#272343]  text-white">
         <Hero />
         <Timeline />
+        <MapComponent />
         <Footer />
       </div>
     </>
