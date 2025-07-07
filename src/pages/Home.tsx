@@ -7,12 +7,21 @@ import Footer from "../components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#272343]  text-white">
-      <Nav></Nav>
-      <Header />
-      <Hero />
-      <Timeline />
-      <Footer />
-    </div>
+    <>
+      <div className="bg-[#1E1C3D] h-[100vh] text-white">
+        {" "}
+        <Nav />
+        <div className="flex justify-center h-screen items-center">
+          {" "}
+          <Header />
+        </div>
+      </div>
+
+      <div className="min-h-screen bg-[#272343]  text-white">
+        <Hero />
+        <Timeline />
+        <Footer />
+      </div>
+    </>
   );
 }
