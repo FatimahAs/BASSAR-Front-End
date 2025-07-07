@@ -4,36 +4,40 @@ import { Link, useNavigate } from "react-router";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setphoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const res = await fetch(`https://683f24371cd60dca33de6ad4.mockapi.io/user`);
-      const users = await res.json();
+  try {
+    const res = await fetch("http://localhost:3000/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber, 
+        password: password,
+      }),
+    });
 
-      const found = users.find(
-        (user: any) => user.phone === phone && user.password === password
-      );
+    const data = await res.json();
 
-      if (found) {
-        alert("تم تسجيل الدخول بنجاح");
-        navigate("/map")
-        // يمكنك تخزين بيانات المستخدم هنا:
-        // localStorage.setItem("user", JSON.stringify(found));
-        // ثم التوجيه للصفحة الرئيسية مثلًا:
-        // navigate("/dashboard");
-      } else {
-        alert("رقم الجوال أو كلمة السر غير صحيحة");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("حدث خطأ أثناء تسجيل الدخول");
+    if (res.ok && data.token) {
+      alert("تم تسجيل الدخول بنجاح");
+      // خزّن التوكن
+      localStorage.setItem("token", data.token);
+      navigate("/map");
+    } else {
+      alert(data.message || "رقم الجوال أو كلمة السر غير صحيحة");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("حدث خطأ أثناء تسجيل الدخول");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-90 via-yellow-100 to-white-200 px-4">
@@ -53,8 +57,8 @@ export default function SignUpPage() {
             </label>
             <input
               type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={phoneNumber}
+              onChange={(e) => setphoneNumber(e.target.value)}
               className="w-full px-4 py-2 border border-[#F8D203] rounded-full focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />

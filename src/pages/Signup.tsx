@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setphoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,19 +20,22 @@ export default function SignUpPage() {
     }
 
     try {
-      const res = await fetch("https://683f24371cd60dca33de6ad4.mockapi.io/user", {
+      const res = await fetch("http://localhost:3000/api/users/register", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, phone, email, password })
+        body: JSON.stringify({ name, phoneNumber, email, password }),
       });
 
-      if (res.ok) {
+      const data = await res.json();
+
+      if (res.ok && data.token) {
         alert("تم التسجيل بنجاح!");
-        navigate('/map')
+        localStorage.setItem("token", data.token); // حفظ التوكن
+        navigate("/map");
       } else {
-        alert("حدث خطأ أثناء التسجيل");
+        alert(data.message || "حدث خطأ أثناء التسجيل");
       }
     } catch (err) {
       console.error(err);
@@ -45,10 +48,15 @@ export default function SignUpPage() {
       <div className="relative bg-white/60 backdrop-blur-xl border border-white/70 rounded-3xl shadow-xl w-full max-w-md p-8 md:p-10">
         <div className="flex flex-col justify-center items-center">
           <img src="/assets/logo-remove.png" alt="logo" className="w-30" />
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center">بصّار</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center">
+            بصّار
+          </h2>
         </div>
 
-        <p className="text-[#272343] text-center mt-1 mb-6 text-sm"> لتكن على بصيرة </p>
+        <p className="text-[#272343] text-center mt-1 mb-6 text-sm">
+          {" "}
+          لتكن على بصيرة{" "}
+        </p>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
@@ -69,8 +77,8 @@ export default function SignUpPage() {
             </label>
             <input
               type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={phoneNumber}
+              onChange={(e) => setphoneNumber(e.target.value)}
               className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
@@ -78,7 +86,7 @@ export default function SignUpPage() {
 
           <div>
             <label className="block text-sm font-medium text-[#272343] mb-1">
-              البريد الألكتروني 
+              البريد الألكتروني
             </label>
             <input
               type="email"
@@ -145,7 +153,10 @@ export default function SignUpPage() {
           </button>
           <div className="flex justify-center items-center">
             <p className="p-1 text-[#272343]"> لديك حساب ؟! </p>
-            <Link className="underline text-[#272343]" to="/signin"> تسجيل الدخول</Link> 
+            <Link className="underline text-[#272343]" to="/signin">
+              {" "}
+              تسجيل الدخول
+            </Link>
           </div>
         </form>
       </div>
