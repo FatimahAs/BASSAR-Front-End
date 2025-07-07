@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +16,11 @@ export default function SignUpPage() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("كلمة المرور غير متطابقة");
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "كلمة المرور غير متطابقة",
+      });
       return;
     }
 
@@ -31,15 +36,32 @@ export default function SignUpPage() {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        alert("تم التسجيل بنجاح!");
-        localStorage.setItem("token", data.token); // حفظ التوكن
-        navigate("/map");
+        // تخزين token و name
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("name", data.user?.name || "");
+
+        Swal.fire({
+          icon: "success",
+          title: "تم التسجيل بنجاح!",
+          timer: 1500,
+          showConfirmButton: false,
+        }).then(() => {
+          navigate("/map");
+        });
       } else {
-        alert(data.message || "حدث خطأ أثناء التسجيل");
+        Swal.fire({
+          icon: "error",
+          title: "خطأ",
+          text: data.message || "حدث خطأ أثناء التسجيل",
+        });
       }
     } catch (err) {
       console.error(err);
-      alert("فشل الاتصال بالخادم");
+      Swal.fire({
+        icon: "error",
+        title: "خطأ في الاتصال",
+        text: "فشل الاتصال بالخادم",
+      });
     }
   };
 
@@ -54,20 +76,19 @@ export default function SignUpPage() {
         </div>
 
         <p className="text-[#272343] text-center mt-1 mb-6 text-sm">
-          {" "}
-          لتكن على بصيرة{" "}
+          لتكن على بصيرة
         </p>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className=" block text-sm font-medium text-[#272343] mb-1">
+            <label className="block text-sm font-medium text-[#272343] mb-1">
               الاسم
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
           </div>
@@ -79,7 +100,7 @@ export default function SignUpPage() {
               type="tel"
               value={phoneNumber}
               onChange={(e) => setphoneNumber(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
           </div>
@@ -92,7 +113,7 @@ export default function SignUpPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
           </div>
@@ -105,13 +126,13 @@ export default function SignUpPage() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute left-3 top-8 text-[#272343] hover:text-gray-700"
+              className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
             >
               {showPassword ? (
                 <EyeSlashIcon className="w-5 h-5" />
@@ -129,13 +150,13 @@ export default function SignUpPage() {
               type={showPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute left-3 top-8 text-[#272343] hover:text-gray-700"
+              className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
             >
               {showPassword ? (
                 <EyeSlashIcon className="w-5 h-5" />
@@ -147,14 +168,13 @@ export default function SignUpPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-full transition"
+            className="w-full mt-5 bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-xl transition"
           >
             تسجيل
           </button>
           <div className="flex justify-center items-center">
             <p className="p-1 text-[#272343]"> لديك حساب ؟! </p>
             <Link className="underline text-[#272343]" to="/signin">
-              {" "}
               تسجيل الدخول
             </Link>
           </div>

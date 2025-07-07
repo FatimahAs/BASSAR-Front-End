@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from "react-router";
+import Swal from 'sweetalert2';
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,35 +10,51 @@ export default function SignUpPage() {
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await fetch("http://localhost:3000/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        phoneNumber: phoneNumber, 
-        password: password,
-      }),
-    });
+    try {
+      const res = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber, 
+          password: password,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok && data.token) {
-      alert("تم تسجيل الدخول بنجاح");
-      // خزّن التوكن
-      localStorage.setItem("token", data.token);
-      navigate("/map");
-    } else {
-      alert(data.message || "رقم الجوال أو كلمة السر غير صحيحة");
+      if (res.ok && data.token) {
+        // تخزين التوكن والاسم في localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("name", data.user?.name || "");
+
+        Swal.fire({
+          icon: "success",
+          title: "تم تسجيل الدخول بنجاح",
+          timer: 1500,
+          showConfirmButton: false,
+        }).then(() => {
+          navigate("/map");
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "خطأ",
+          text: data.message || "رقم الجوال أو كلمة السر غير صحيحة",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "خطأ في الاتصال",
+        text: "حدث خطأ أثناء تسجيل الدخول",
+      });
     }
-  } catch (err) {
-    console.error(err);
-    alert("حدث خطأ أثناء تسجيل الدخول");
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-90 via-yellow-100 to-white-200 px-4">
@@ -59,7 +76,7 @@ export default function SignUpPage() {
               type="tel"
               value={phoneNumber}
               onChange={(e) => setphoneNumber(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
           </div>
@@ -72,13 +89,13 @@ export default function SignUpPage() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute left-3 top-8 text-[#272343] hover:text-gray-700"
+              className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
             >
               {showPassword ? (
                 <EyeSlashIcon className="w-5 h-5" />
@@ -90,7 +107,7 @@ export default function SignUpPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-full transition"
+            className="w-full mt-5 bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-xl transition"
           >
             تسجيل الدخول
           </button>

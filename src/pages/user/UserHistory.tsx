@@ -50,7 +50,9 @@ export default function UserHistory() {
       <main className=" flex-1 p-4 md:p-8">
    <div className="flex justify-between items-start flex-wrap mb-5 gap-4">
           <div>
-            <h2 className="text-xl font-bold">Welcome User 👋</h2>
+            <h2 className="text-xl font-bold">
+  Welcome {localStorage.getItem("name") || "User"} 👋
+</h2>
         
           </div>
           <Button className="bg-yellow-400 text-black rounded-full flex gap-2 items-center">

@@ -6,57 +6,49 @@ import UserSidebar from "../../components/UserSidebar";
 
 const dangers = [
   {
-    "position": "وادي الدواسر",
-    "city":"الرياض",
-  "image": "/assets/camell.png",
-  "tag":' ممر جمال '
+    position: "وادي الدواسر",
+    city: "الرياض",
+    image: "/assets/camell.png",
+    tag: " ممر جمال ",
   },
-   {
-  
-    "position": "مرتفعات السودة ",
-    "city":"ابها",
-  "image": "/assets/dangers-road.png",
-  "tag":' منحدر  جبلي وعر  '
+  {
+    position: "مرتفعات السودة ",
+    city: "ابها",
+    image: "/assets/dangers-road.png",
+    tag: " منحدر  جبلي وعر  ",
   },
-    {
- 
-    "position": "  جبل نهران ",
-    "city":"ابها",
-  "image": "/assets/rock.png",
-  "tag":' انهيارات صخرية'
+  {
+    position: "  جبل نهران ",
+    city: "ابها",
+    image: "/assets/rock.png",
+    tag: " انهيارات صخرية",
   },
-    {
- 
-    "position": " النفوذ ",
-    "city":"الجوف - حائل ",
-  "image": "/assets/desert.png",
-  "tag":'  طريق مقطوعة'
-}
-]
-
-
+  {
+    position: " النفوذ ",
+    city: "الجوف - حائل ",
+    image: "/assets/desert.png",
+    tag: "  طريق مقطوعة",
+  },
+];
 
 const UserDashboard = () => {
-
-
-
   return (
     <div className="min-h-screen bg-gray-50 flex text-gray-800">
-      <UserSidebar/>
+      <UserSidebar />
 
       {/* Main content */}
       <main className="flex-1 p-6 space-y-6">
         <div className="flex justify-between items-start flex-wrap gap-4">
           <div>
-            <h2 className="text-xl font-bold">Welcome User 👋</h2>
+            <h2 className="text-xl font-bold">
+              Welcome {localStorage.getItem("name") || "User"} 👋
+            </h2>
             <p className="text-sm text-gray-500">لتكن على بصيرة</p>
           </div>
           <Button className="bg-yellow-400 text-black rounded-full flex gap-2 items-center">
-           <Bell color="#ffffff" />
+            <Bell color="#ffffff" />
           </Button>
         </div>
-
-       
 
         {/* Trips section */}
         <div>
@@ -65,12 +57,12 @@ const UserDashboard = () => {
             {dangers.map((danger) => (
               //<Card  className="relative">
               //  <span className="absolute top-2 right-2 bg-yellow-300 text-xs px-2 py-1 rounded-full font-bold">New</span>
-                
+
               //  <div className="h-32 bg-white rounded-t flex flex-col justify-center items-center">
               //    <img src={danger.image}  className="w-full h-48 object-cover"/>
               //  </div>
               //  <CardContent className="p-4 border-1 rounded-xl border-[#f2dd3b64]">
-                 
+
               //    <h5 className="font-bold text-sm">{danger.position}</h5>
               //    <p className="text-xs text-gray-500">{danger.city} </p>
               //    <div className="flex flex-wrap gap-2 mt-2">
@@ -81,31 +73,30 @@ const UserDashboard = () => {
               //</Card>
 
               <div className="rounded-xl overflow-hidden border border-yellow-200 shadow-md">
-  <div className="relative">
-    <img src={danger.image} alt="dangers-zone" className="w-90 h-42 object-cover" />
-    <span className="absolute top-2 right-2 bg-yellow-400 text-black text-sm font-bold px-2 py-1 rounded-full">
-      New
-    </span>
-  </div>
-  <div className="p-4 text-right">
-    <h3 className="text-sm font-bold"> {danger.position}</h3>
-    <p className="text-sm text-gray-500">{danger.city}</p>
-    <span className="inline-block mt-2 px-3 py-1 bg-gray-100 rounded text-xs">
-      { danger.tag}
-    </span>
-  </div>
-</div>
-
+                <div className="relative">
+                  <img
+                    src={danger.image}
+                    alt="dangers-zone"
+                    className="w-90 h-42 object-cover"
+                  />
+                  <span className="absolute top-2 right-2 bg-yellow-400 text-black text-sm font-bold px-2 py-1 rounded-full">
+                    New
+                  </span>
+                </div>
+                <div className="p-4 text-right">
+                  <h3 className="text-sm font-bold"> {danger.position}</h3>
+                  <p className="text-sm text-gray-500">{danger.city}</p>
+                  <span className="inline-block mt-2 px-3 py-1 bg-gray-100 rounded text-xs">
+                    {danger.tag}
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-
-    
       </main>
     </div>
   );
 };
 
 export default UserDashboard;
-
-

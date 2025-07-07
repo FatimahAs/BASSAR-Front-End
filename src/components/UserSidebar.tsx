@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Link, useNavigate } from "react-router";
 import { LogOut } from "lucide-react";
+import Swal from "sweetalert2";
 
 export default function AdminSidebar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("name");
+    if (storedName) setUserName(storedName);
+  }, []);
 
   const handleOverlayClick = () => {
     setMenuOpen(false);
@@ -14,7 +21,10 @@ export default function AdminSidebar() {
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("لا يوجد مستخدم مسجل دخول");
+      Swal.fire({
+        icon: "warning",
+        title: "لا يوجد مستخدم مسجل دخول",
+      });
       return;
     }
 
@@ -27,15 +37,30 @@ export default function AdminSidebar() {
       });
 
       if (res.ok) {
+        // حذف البيانات من التخزين
         localStorage.removeItem("token");
-        alert("تم تسجيل الخروج بنجاح");
-        navigate("/signin");
+        localStorage.removeItem("name");
+
+        Swal.fire({
+          icon: "success",
+          title: "تم تسجيل الخروج بنجاح",
+          timer: 1500,
+          showConfirmButton: false,
+        }).then(() => {
+          navigate("/signin");
+        });
       } else {
-        alert("فشل تسجيل الخروج");
+        Swal.fire({
+          icon: "error",
+          title: "فشل تسجيل الخروج",
+        });
       }
     } catch (err) {
       console.error(err);
-      alert("خطأ في الاتصال بالخادم");
+      Swal.fire({
+        icon: "error",
+        title: "خطأ في الاتصال بالخادم",
+      });
     }
   };
 
@@ -48,7 +73,6 @@ export default function AdminSidebar() {
         ></div>
       )}
 
-      {/* Sidebar */}
       <aside className="w-64 bg-white p-6 border-r border-[#d8d0d090] hidden md:block">
         <div className="flex justify-center items-center">
           <img src="/assets/logo.png" className="w-25 mb-9" />
@@ -71,13 +95,12 @@ export default function AdminSidebar() {
             </Button>
           </Link>
 
-          {/* المستخدم والمعلومات */}
           <div className="absolute mt-10 right-6 flex items-center space-x-3">
             <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">
-              A
+              {userName ? userName.charAt(0).toUpperCase() : "A"}
             </div>
             <div>
-              <p className="font-semibold">User</p>
+              <p className="font-semibold">{userName || "User"}</p>
               <p className="text-xs text-gray-400">user@user.com</p>
             </div>
             <LogOut
