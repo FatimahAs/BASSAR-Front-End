@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router";
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,12 +20,12 @@ export default function SignUpPage() {
     }
 
     try {
-      const res = await fetch("https://683f24371cd60dca33de6ad4.mockapi.io/user", {
+      const res = await fetch("http://localhost:3000/api/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ name, phone, email, password })
+        body: JSON.stringify({ name, phoneNumber, email, password })
       });
 
       if (res.ok) {
@@ -69,8 +69,8 @@ export default function SignUpPage() {
             </label>
             <input
               type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
