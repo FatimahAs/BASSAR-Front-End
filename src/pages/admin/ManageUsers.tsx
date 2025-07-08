@@ -80,7 +80,7 @@ const users: User[] = [
 const ManageUsers: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-    <AdminSidebar/>
+      <AdminSidebar />
 
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-8">
@@ -91,8 +91,8 @@ const ManageUsers: React.FC = () => {
               Filter, sort, and access detailed user profiles
             </p>
           </div>
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-medium w-full md:w-auto">
-             Add new user
+          <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-medium w-full md:w-auto cursor-pointer">
+            Add new user
           </button>
         </div>
 
