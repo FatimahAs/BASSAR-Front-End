@@ -1,6 +1,6 @@
 import React from "react";
 import UserSidebar from "../../components/UserSidebar";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../components/ui/Button";
 import { Trash, Plus, Bell } from "lucide-react"
 
 type Trip = {

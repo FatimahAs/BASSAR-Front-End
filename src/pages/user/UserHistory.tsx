@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "../../components/ui/button";
-import { FaStar } from "react-icons/fa";
+import { Button } from "../../components/ui/Button";
 import { Bell,SaudiRiyal,Trash,Star,Trash2 } from "lucide-react";
 import UserSidebar from "../../components/UserSidebar";
 

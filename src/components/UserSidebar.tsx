@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 import { Link,useLocation } from "react-router"
 import {  LogOut } from "lucide-react";
 
@@ -48,6 +48,18 @@ export default function AdminSidebar() {
           variant={currentPath === "/userlist" ? "default" : "ghost"}
           className={`w-full ${
             currentPath === "/userlist"
+              ? "bg-yellow-400 text-black"
+              : "justify-start"
+          }`}
+        >
+        طلب المساعدة
+        </Button>
+          </Link>
+             <Link to="/dangerlist">
+        <Button
+          variant={currentPath === "/dangerlist" ? "default" : "ghost"}
+          className={`w-full ${
+            currentPath === "/dangerlist"
               ? "bg-yellow-400 text-black"
               : "justify-start"
           }`}

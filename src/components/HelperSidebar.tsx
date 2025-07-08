@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 import { Link,useLocation } from "react-router"
 import {  LogOut } from "lucide-react";
 
