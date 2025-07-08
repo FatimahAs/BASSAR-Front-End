@@ -26,35 +26,6 @@ export default function AdminSidebar() {
         <div className="flex justify-center items-center">
            <img src="/assets/logo.png" className=" w-25 mb-9" />
           </div>
-
-       
-        {/*<nav className="space-y-3">
-				  <Link to="/admin" >
-					   <Button variant="default" className="w-full bg-yellow-400 text-black">
-            لوحة التحكم
-          </Button>
-				  </Link>
-         <Link to="/listuser">
-          <Button variant="ghost" className="w-full justify-start">
-            جميع المستخدمين
-            </Button>
-          </Link>
-				  <Link to="/listhelper">
-					   <Button variant="ghost" className="w-full justify-start">
-             الخدمات المساندة
-          </Button>
-				  </Link>
-				      <div className="absolute mt-10 right-6 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">
-            A
-          </div>
-          <div>
-            <p className="font-semibold">Admin</p>
-            <p className="text-xs text-gray-400">admin@admin.com</p>
-          </div>
-          <LogOut className="mr-auto text-red-500 cursor-pointer" />
-        </div>
-        </nav>*/}
     
   <nav className="space-y-3 relative">
       <Link to="/admin">
