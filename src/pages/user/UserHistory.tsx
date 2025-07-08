@@ -46,7 +46,6 @@ export default function UserHistory() {
     <div className="flex min-h-screen bg-gray-50">
        <UserSidebar/>
 
-      {/* Content */}
       <main className=" flex-1 p-4 md:p-8">
    <div className="flex justify-between items-start flex-wrap mb-5 gap-4">
           <div>
