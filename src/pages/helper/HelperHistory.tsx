@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../components/ui/Button";
 import HelperSidebar from "../../components/HelperSidebar";
 import { ArrowUpRight, Bell,SaudiRiyal } from "lucide-react";
 type Trip = {
