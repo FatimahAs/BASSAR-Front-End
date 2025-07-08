@@ -5,7 +5,11 @@ import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-direct
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { FaExclamationTriangle, FaHandsHelping } from "react-icons/fa";
 import { RiChatHistoryFill } from "react-icons/ri";
+import camelWarningIcon from '../assets/den3.png';
+import rockfallIcon from '../assets/den2.png';
+import dangerIcon from '../assets/den1.png';
 import '../App.css';
+import axios from "axios";
 
 export const Access_Token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
    mapboxgl.accessToken = Access_Token
@@ -132,8 +136,6 @@ if (defaultPanel && customPanel) {
         }
       });
     });
-    //add warnings on map function get the endpoint and then check that destination exist then display warnings acording to desti coords
-
     //initial user location 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -161,6 +163,9 @@ if (defaultPanel && customPanel) {
         }
       );
     }
+    directionsRef.current?.on("route", () => {
+  DisplayWarningsOnRoute();
+});
       return () => {
     mapRef.current?.remove();
     if (watchIdRef.current !== null) {
@@ -170,6 +175,58 @@ if (defaultPanel && customPanel) {
   };
 
   },[])
+      //add warnings on map function 
+ const DisplayWarningsOnRoute = async () => {
+  if (!mapRef.current || !directionsRef.current) return;
+
+  const routes = directionsRef.current.getRoutes();
+  if (!routes || routes.length === 0) {
+    console.warn("No route available");
+    return;
+  }
+
+  const routeCoords = routes[0].geometry.coordinates; // [lng, lat][]
+
+  try {
+    const { data: dangerZones } = await axios.get("https://localhost:3000/api/danger-zones");
+
+    const matchingZones = dangerZones.filter((zone: any) => {
+      return routeCoords.some(([lng, lat]: [number, number]) => {
+        const threshold = 0.01; 
+        return (
+          Math.abs(zone.location.lng - lng) < threshold &&
+          Math.abs(zone.location.lat - lat) < threshold
+        );
+      });
+    });
+
+    matchingZones.forEach((zone: any) => {
+      const el = document.createElement("div");
+      el.style.backgroundImage = `url(${getDangerIcon(zone.name)})`;
+      el.style.width = "32px";
+      el.style.height = "32px";
+      el.style.backgroundSize = "contain";
+      el.style.backgroundRepeat = "no-repeat";
+
+      new mapboxgl.Marker(el)
+        .setLngLat([zone.location.lng, zone.location.lat])
+        .setPopup(new mapboxgl.Popup().setText(zone.name))
+        .addTo(mapRef.current!);
+    });
+
+    if (matchingZones.length === 0) {
+      alert("لا توجد تحذيرات على المسار المختار.");
+    }
+  } catch (err) {
+    console.error("Error fetching danger zones:", err);
+    alert("فشل تحميل بيانات التحذيرات.");
+  }
+};
+           const getDangerIcon = (name: string): string => {
+          if (name.includes("جمال")) return camelWarningIcon;
+          if (name.includes("انزلاق") || name.includes("صخور")) return rockfallIcon;
+          return dangerIcon;
+        };
 
         const handleReportType = (type: string) => {
     if (!navigator.geolocation || !mapRef.current) return;
@@ -259,7 +316,8 @@ if (defaultPanel && customPanel) {
           display: "flex",
           gap: "5px",
           justifyContent: 'center',
-          width: "100%"
+          width: "100%",
+          flexShrink: "0"
          }} >
            {/* بلّغ */}
   <button
