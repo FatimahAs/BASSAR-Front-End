@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <g id="Stock_cut" style="" transform="matrix(9.138745, 0, 0, 9.331773, -2884.12085, -1325.235229)">
+    <desc/>
+    <g transform="matrix(1, 0, 0, 1, 326.9487, 152.803421)">
+      <path d="M27,12   c0-6.075-4.925-11-11-11S5,5.925,5,12c0,8,11,19,11,19S27,20,27,12z" fill="none" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" style="stroke: rgb(255, 255, 255);"/>
+      <circle cx="16" cy="12" fill="none" r="4" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" style="stroke: rgb(255, 255, 255);"/>
+    </g>
+  </g>
+</svg>
