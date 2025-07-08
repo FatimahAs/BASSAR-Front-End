@@ -21,10 +21,10 @@
 
 | الاسم | GitHub |
 |------|--------|
-| [فاطمة احمد عسيري] | [https://github.com/FatimahAs](https://github.com/FatimahAs) |
-| [الوليد عبدالعزيز الحربي ] | [https://github.com/wtiy4](https://github.com/wtiy4) |
-| [ عائشه علي العياضي ] | [ https://github.com/aishahali1]( https://github.com/aishahali1) |
-| [ثامر سلامه العنزي  ] | [https://github.com/Thamer1111](https://github.com/Thamer1111) |
+| فاطمة احمد عسيري| [https://github.com/FatimahAs](https://github.com/FatimahAs) |
+| الوليد عبدالعزيز الحربي  | [https://github.com/wtiy4](https://github.com/wtiy4) |
+|  عائشه علي العياضي  | [ https://github.com/aishahali1]( https://github.com/aishahali1) |
+| ثامر سلامه العنزي   | [https://github.com/Thamer1111](https://github.com/Thamer1111) |
 
 
 ---
