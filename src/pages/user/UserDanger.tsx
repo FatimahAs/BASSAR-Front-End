@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import UserSidebar from "../../components/UserSidebar";
 import { Button } from "../../components/ui/Button";
-import HelperSidebar from "../../components/HelperSidebar";
-import { ArrowUpRight, Bell,SaudiRiyal } from "lucide-react";
+import { Trash, Plus, Bell } from "lucide-react"
+
 type Trip = {
   id: number;
   title: string;
@@ -38,26 +39,30 @@ const trips: Trip[] = [
 
 ];
 
-export default function HelperHistory() {
-  
-
+const UserDanger: React.FC = () => {
   return (
-    <div className="flex min-h-screen bg-gray-50">
-       <HelperSidebar/>
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+    <UserSidebar/>
 
-      {/* Content */}
-      <main className=" flex-1 p-4 md:p-8">
-   <div className="flex justify-between items-start flex-wrap mb-5 gap-4">
+      {/* Main Content */}
+      <main className="flex-1 p-4 md:p-8">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-2">
           <div>
-            <h2 className="text-xl font-bold">Welcome Helper 👋</h2>
-        
+            <h1 className="text-xl md:text-2xl font-semibold">التحذيرات المضافة </h1>
+            <p className="text-gray-500 text-sm">
+              اضف التحذيرات التي واجهتك على الطريق لتنبيه غيرك
+            </p>
           </div>
-          <Button className="bg-yellow-400 text-black rounded-full flex gap-2 items-center">
+          <div className="flex flex-row gap-3">
+             <button className="bg-[#F8D203] hover:bg-yellow-500 text-white px-4 py-2 rounded font-medium w-full md:w-auto">
+          <div className="flex flex-row"><p>اضافة تحذير </p>  <Plus className="mr-2"/></div>
+          </button>
+           <Button className="bg-[#F8D203] rounded flex gap-2 items-center">
            <Bell color="#ffffff" />
           </Button>
+         </div>
         </div>
-
-        {/* Trips Grid */}
+  {/* Trips Grid */}
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {trips.map((trip) => (
             <div
@@ -68,7 +73,7 @@ export default function HelperHistory() {
               <div className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden relative">
                  <div className="p-4">
                 <h2 className="text-lg font-semibold">{trip.title}</h2>
-                <div className="mt-2 flex flex-row justify-between items-center"><p className="text-lg text-gray-500">{trip.price}</p><SaudiRiyal color="#f8d203" /></div>
+                <div className="mt-2 flex flex-row justify-between items-center"><p className="text-lg text-gray-500">{trip.price}</p></div>
                 {/*<div className="mt-2 flex flex-wrap gap-1">
                   {trip.tags.map((tag) => (
                     <span
@@ -90,30 +95,10 @@ export default function HelperHistory() {
           ))}
         </div>
 
-        {/* Pagination */}
-        {/*<div className="flex justify-center mt-6 space-x-2">
-          <button className="px-3 py-1 bg-white border border-[#d8d0d090] rounded hover:bg-gray-100">
-            Previous
-          </button>
-          {[1, 2, 3, 4, 5, 6].map((page) => (
-            <button
-              key={page}
-              className={`px-3 py-1 rounded ${
-                page === 1
-                  ? "bg-yellow-400 font-semibold"
-                  : "bg-white border border-[#d8d0d090] hover:bg-gray-100"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button className="px-3 py-1 bg-white border rounded border-[#d8d0d090] hover:bg-gray-100">
-            Next
-          </button>
-			  </div>*/}
-			  
       </main>
     </div>
+    
   );
-}
+};
 
+export default UserDanger;

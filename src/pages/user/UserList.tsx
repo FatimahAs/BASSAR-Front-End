@@ -1,58 +1,42 @@
 import React from "react";
 import UserSidebar from "../../components/UserSidebar";
-import {Trash} from "lucide-react"
-type User = {
-  name: string;
-  email: string;
-  dateJoined: string;
-  itineraries: number;
-  status: "Helper" ;
-  avatar: string | null;
+import { Button } from "../../components/ui/Button";
+import { Trash, Plus, Bell } from "lucide-react"
+
+type Trip = {
+  id: number;
+  title: string;
+  price: string;
+  image: string;
 };
 
-const users: User[] = [
+const trips: Trip[] = [
   {
-    name: "James Anderson",
-    email: "olivia@jsmastery.pro",
-    dateJoined: "Jan 6, 2022",
-    itineraries: 12,
-    status: "Helper",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    id: 1,
+    title: "سطحة",
+    price: "200",
+    image: "/assets/tow-truck.png",
   },
   {
-    name: "Michael Johnson",
-    email: "phoenix@jsmastery.pro",
-    dateJoined: "Jan 6, 2022",
-    itineraries: 21,
-    status: "Helper",
-    avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+    id: 2,
+    title: "وقود",
+    price: "50",
+    image: "/assets/gas-pump.png",
   },
   {
-    name: "Jason Wilson",
-    email: "demi@jsmastery.pro",
-    dateJoined: "Jan 5, 2022",
-    itineraries: 3,
-    status: "Helper",
-    avatar: "https://randomuser.me/api/portraits/men/25.jpg",
-  },
-  
-  {
-    name: "Kevin Taylor",
-    email: "natali@jsmastery.pro",
-    dateJoined: "Jan 5, 2022",
-    itineraries: 31,
-    status: "Helper",
-    avatar: "https://randomuser.me/api/portraits/men/56.jpg",
+    id: 3,
+    title: "بطارية سيارة",
+    price: "300",
+    image: "/assets/accumulator.png",
+
   },
   {
-    name: "Brian Miller",
-    email: "drew@jsmastery.pro",
-    dateJoined: "Jan 4, 2022",
-    itineraries: 17,
-    status: "Helper",
-    avatar: "https://randomuser.me/api/portraits/men/61.jpg",
-  },
- 
+    id: 4,
+    title: "شخص للمساعدة ",
+    price: "50-500",
+    image: "/assets/man.png",
+  }
+
 ];
 
 const UserList: React.FC = () => {
@@ -64,108 +48,56 @@ const UserList: React.FC = () => {
       <main className="flex-1 p-4 md:p-8">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-2">
           <div>
-            <h1 className="text-xl md:text-2xl font-semibold">Manage Users</h1>
+            <h1 className="text-xl md:text-2xl font-semibold">التحذيرات المضافة </h1>
             <p className="text-gray-500 text-sm">
-              Filter, sort, and access detailed user profiles
+              اضف التحذيرات التي واجهتك على الطريق لتنبيه غيرك
             </p>
           </div>
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-medium w-full md:w-auto">
-             Add new user
+          <div className="flex flex-row gap-3">
+             <button className="bg-[#F8D203] hover:bg-yellow-500 text-white px-4 py-2 rounded font-medium w-full md:w-auto">
+          <div className="flex flex-row"><p>اضافة تحذير </p>  <Plus className="mr-2"/></div>
           </button>
+           <Button className="bg-[#F8D203] rounded flex gap-2 items-center">
+           <Bell color="#ffffff" />
+          </Button>
+         </div>
         </div>
-
-        <div className="bg-white shadow rounded overflow-x-auto">
-          <table className="min-w-full text-left text-sm">
-            <thead className="border-b border-[#7a77777e] bg-gray-50">
-              <tr>
-                <th className="p-4 font-medium">Name</th>
-                <th className="p-4 font-medium hidden sm:table-cell">
-                  Email Address
-                </th>
-                <th className="p-4 font-medium hidden md:table-cell">
-                  Date Joined
-                </th>
-                <th className="p-4 font-medium hidden lg:table-cell">
-                  Itinerary Created
-                </th>
-                <th className="p-4 font-medium">Status</th>
-                <th className="p-4 font-medium"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user, idx) => (
-                <tr
-                  key={idx}
-                  className="border-b border-[#c5c1c1a6] hover:bg-gray-50 transition-colors"
-                >
-                  <td className="p-4 flex items-center gap-3">
-                    {user.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="w-8 h-8 rounded-full"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">
-                        {user.name.charAt(0)}
-                      </div>
-                    )}
-                    <span>{user.name}</span>
-                  </td>
-                  <td className="p-4 hidden sm:table-cell">{user.email}</td>
-                  <td className="p-4 hidden md:table-cell">
-                    {user.dateJoined}
-                  </td>
-                  <td className="p-4 hidden lg:table-cell">
-                    {user.itineraries.toString().padStart(2, "0")}
-                  </td>
-                  <td className="p-4">
+  {/* Trips Grid */}
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {trips.map((trip) => (
+            <div
+              key={trip.id}
+              className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden relative"
+            >
+              <div className="flex justify-center items-center m-3"><img src={ trip.image} className="w-20 h-20 "/></div>
+              <div className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden relative">
+                 <div className="p-4">
+                <h2 className="text-lg font-semibold">{trip.title}</h2>
+                <div className="mt-2 flex flex-row justify-between items-center"><p className="text-lg text-gray-500">{trip.price}</p></div>
+                {/*<div className="mt-2 flex flex-wrap gap-1">
+                  {trip.tags.map((tag) => (
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        user.status === "Helper"
-                          ? "bg-blue-100 text-blue-600"
-                          :"bg-green-100 text-green-600"
-                      }`}
+                      key={tag}
+                      className="text-xs bg-gray-100 px-2 py-0.5 rounded-full"
                     >
-                      {user.status}
+                      {tag}
                     </span>
-                  </td>
-                  <td className="p-4">
-                    <button onClick={()=> {}} className="text-gray-400 hover:text-gray-600">
-                     <Trash color="#e64141" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  ))}
+                </div>*/}
+              </div>
+                </div>
+
+
+              <span className="absolute top-2 right-2 text-xs bg-yellow-400 text-black px-2 py-0.5 rounded-full">
+                New
+              </span>
+            </div>
+          ))}
         </div>
 
-        {/* Pagination */}
-        <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-2">
-          <button className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
-            ⬅️ Previous
-          </button>
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5, 6].map((page) => (
-              <button
-                key={page}
-                className={`w-8 h-8 rounded ${
-                  page === 1
-                    ? "bg-yellow-400 text-black font-medium"
-                    : "hover:bg-gray-200 text-gray-700"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-          </div>
-          <button className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
-            Next ➡️
-          </button>
-        </div>
       </main>
     </div>
+    
   );
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent } from "../../components/ui/Card";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../components/ui/Button";
 import { ArrowUpRight, Bell } from "lucide-react";
 import UserSidebar from "../../components/UserSidebar";
 
@@ -82,10 +82,10 @@ const UserDashboard = () => {
 
               <div className="rounded-xl overflow-hidden border border-yellow-200 shadow-md">
   <div className="relative">
-    <img src={danger.image} alt="dangers-zone" className="w-90 h-42 object-cover" />
-    <span className="absolute top-2 right-2 bg-yellow-400 text-black text-sm font-bold px-2 py-1 rounded-full">
+    <img src={danger.image} alt="dangers-zone" className="w-60 h-42 object-cover" />
+    {/*<span className="absolute top-2 right-2 bg-yellow-400 text-black text-sm font-bold px-2 py-1 rounded-full">
       New
-    </span>
+    </span>*/}
   </div>
   <div className="p-4 text-right">
     <h3 className="text-sm font-bold"> {danger.position}</h3>
