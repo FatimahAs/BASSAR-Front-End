@@ -3,6 +3,7 @@ import { Button } from "../../components/ui/button";
 
 import { Bell,SaudiRiyal } from "lucide-react";
 import UserSidebar from "../../components/UserSidebar";
+import { Link } from "react-router";
 type Trip = {
   id: number;
   title: string;
@@ -25,7 +26,7 @@ const trips: Trip[] = [
   },
   {
     id: 3,
-    title: "بطارية سيارة",
+    title: "بطارية",
     price: "300",
     image: "/assets/accumulator.png",
 
@@ -62,6 +63,7 @@ export default function UserHistory() {
         {/* Trips Grid */}
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {trips.map((trip) => (
+            <Link to={`/service-list/${encodeURIComponent(trip.title)}`}>
             <div
               key={trip.id}
               className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden relative"
@@ -89,6 +91,7 @@ export default function UserHistory() {
                 New
               </span>
             </div>
+            </Link>
           ))}
         </div>
 

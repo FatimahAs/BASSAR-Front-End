@@ -1,42 +1,52 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import UserSidebar from "./UserSidebar";
-import { Trash } from "lucide-react";
 
 interface HelperUser {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  phone: string;
-  lat: number;
-  lng: number;
-  serviceType: string;
-  price: string;
+  phoneNumber: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  type: string;
+}
+
+interface ServiceItem {
+  _id: string;
+  name: string;
+  price: number;
 }
 
 export default function ServiceList() {
   const { serviceType } = useParams<{ serviceType: string }>();
   const [helpers, setHelpers] = useState<HelperUser[]>([]);
+  const [services, setServices] = useState<ServiceItem[]>([]);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch("https://683f24371cd60dca33de6ad4.mockapi.io/helper")
-      .then((res) => res.json())
-      .then((data) => {
-        const filtered = data.filter((helper: HelperUser) => helper.serviceType === serviceType);
-        setHelpers(filtered);
-      });
-  }, [serviceType]);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((pos) => {
       setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    // Fetch helpers
+    fetch("http://localhost:3001/api/users/helpers")
+      .then((res) => res.json())
+      .then((data) => {
+        const filtered = data.filter((h: HelperUser) => h.type === serviceType);
+        setHelpers(filtered);
+      });
+
+    // Fetch services
+    fetch("http://localhost:3001/api/services")
+      .then((res) => res.json())
+      .then(setServices);
+  }, [serviceType]);
 
   const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => {
     const toRad = (val: number) => (val * Math.PI) / 180;
@@ -50,28 +60,44 @@ export default function ServiceList() {
   };
 
   const sendRequest = async (helper: HelperUser) => {
-    if (!userLocation) return;
     const userData = localStorage.getItem("normalUser");
-    if (!userData) {
-      alert("لم يتم العثور على بيانات المستخدم");
+    const token = localStorage.getItem("token");
+    if (!userData || !token || !userLocation) {
+      alert("الرجاء تسجيل الدخول والموافقة على الموقع");
       return;
     }
-    const { name, phone } = JSON.parse(userData);
-    await fetch("https://6823a18e65ba0580339768c2.mockapi.io/ServiceList", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        phone,
-        lat: userLocation.lat,
-        lng: userLocation.lng,
-        serviceType,
-        helperId: helper.id,
-        status: "pending",
-      }),
-    });
-    alert("تم إرسال الطلب للمساعد");
-    navigate(`/map`);
+
+    // ابحث عن الخدمة المناسبة
+    const matchedService = services.find(s => s.name === serviceType);
+    if (!matchedService) {
+      alert("الخدمة غير متوفرة");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/services/request/${matchedService._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({}),
+        }
+      );
+
+      const result = await res.json();
+      if (res.ok) {
+        alert("تم إرسال الطلب. سيتم تحويلك لصفحة الدفع.");
+        window.open(result.checkoutUrl, "_blank");
+      } else {
+        alert(result.message || "حدث خطأ أثناء إرسال الطلب");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("فشل إرسال الطلب");
+    }
   };
 
   return (
@@ -83,7 +109,10 @@ export default function ServiceList() {
             <h1 className="text-xl md:text-2xl font-semibold">المساعدين لخدمة: {serviceType}</h1>
             <p className="text-gray-500 text-sm">اختر المساعد المناسب لك</p>
           </div>
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-medium w-full md:w-auto">
+          <button
+            className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-medium w-full md:w-auto"
+            onClick={() => window.location.reload()}
+          >
             تحديث القائمة
           </button>
         </div>
@@ -103,17 +132,30 @@ export default function ServiceList() {
             <tbody>
               {helpers.map((helper) => {
                 const distance = userLocation
-                  ? calculateDistance(userLocation.lat, userLocation.lng, helper.lat, helper.lng)
+                  ? calculateDistance(
+                      userLocation.lat,
+                      userLocation.lng,
+                      helper.location?.lat,
+                      helper.location?.lng
+                    )
                   : null;
+                const price =
+                  services.find((s) => s.name === serviceType)?.price || "—";
+
                 return (
-                  <tr key={helper.id} className="border-b border-[#c5c1c1a6] hover:bg-gray-50 transition-colors">
+                  <tr key={helper._id} className="border-b border-[#c5c1c1a6] hover:bg-gray-50 transition-colors">
                     <td className="p-4 font-medium">{helper.name}</td>
-                    <td className="p-4 hidden sm:table-cell">{helper.phone}</td>
-                    <td className="p-4 hidden md:table-cell">{helper.email}</td>
-                    <td className="p-4 hidden lg:table-cell">{distance?.toFixed(2)} كم</td>
-                    <td className="p-4">{helper.price} ريال</td>
+                    <td className="p-4 hidden sm:table-cell">{helper.phoneNumber}</td>
+                    <td className="p-4 hidden md:table-cell">{helper.email || "—"}</td>
+                    <td className="p-4 hidden lg:table-cell">
+                      {distance ? distance.toFixed(2) + " كم" : "—"}
+                    </td>
+                    <td className="p-4">{price} ريال</td>
                     <td className="p-4">
-                      <button onClick={() => sendRequest(helper)} className="text-blue-600 hover:underline">
+                      <button
+                        onClick={() => sendRequest(helper)}
+                        className="text-blue-600 hover:underline"
+                      >
                         طلب مساعدة
                       </button>
                     </td>
@@ -122,29 +164,6 @@ export default function ServiceList() {
               })}
             </tbody>
           </table>
-        </div>
-
-        <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-2">
-          <button className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
-            ⬅️ السابق
-          </button>
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5, 6].map((page) => (
-              <button
-                key={page}
-                className={`w-8 h-8 rounded ${
-                  page === 1
-                    ? "bg-yellow-400 text-black font-medium"
-                    : "hover:bg-gray-200 text-gray-700"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-          </div>
-          <button className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
-            التالي ➡️
-          </button>
         </div>
       </main>
     </div>
