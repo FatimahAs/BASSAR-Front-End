@@ -33,7 +33,7 @@
 
 ## 🎨 التصميم الأولي (Figma)
 
-رابط تصميم Figma: [اضغط هنا لعرض التصميم]([https://www.figma.com/file/your-design-link](https://www.figma.com/design/W6Y10CxLmJZWXfpavgGpTc/Bassar?node-id=0-1&t=q6PrPbEJk75Tuq5Z-1))
+رابط تصميم Figma: [اضغط هنا لعرض التصميم](https://www.figma.com/design/W6Y10CxLmJZWXfpavgGpTc/Bassar?node-id=0-1&t=LPrB1X8jbfwbe5MS-1)
 
 ---
 
