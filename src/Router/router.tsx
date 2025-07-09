@@ -11,7 +11,6 @@ import Signup from "../pages/Signup";
 import HelperDashboard from "../pages/helper/HelperDashboard";
 import UserDashboard from "../pages/user/UserDashboard";
 import HelperHistory from "../pages/helper/HelperHistory";
-import HelpList from "../pages/helper/HelpList";
 import UserList from "../pages/user/UserList";
 import UserHistory from "../pages/user/UserHistory";
 
@@ -50,7 +49,7 @@ const router = createBrowserRouter([
 
       { path: "helper", element: <HelperDashboard /> },
       { path: "helphistory", element: <HelperHistory /> },
-      { path: "helplist", element: <HelpList /> },
+      { path: "helplist", element: <Helper /> },
 
       { path: "user", element: <UserDashboard /> },
          { path: "userhistory", element: <UserHistory /> },
