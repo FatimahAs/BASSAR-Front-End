@@ -4,17 +4,17 @@ import { motion, useInView } from "framer-motion";
 function Timeline() {
   const timeline = [
     {
-      step: "Start",
-      description: "You launch the app and location is locked.",
+      step: "ابدأ",
+      description: "سجّل، وحدد موقعك فورًا.",
     },
-    { step: "Detection", description: "System checks for real-time threats." },
+    { step: "الرصد", description: "مسح لحظي لمحيطك بحثًا عن أي خطر" },
     {
-      step: "Alert",
-      description: "User is notified immediately of a nearby danger.",
+      step: "التنبيه",
+      description: "تنبيه لحظي عند اقتراب أي خطر",
     },
     {
-      step: "Navigate",
-      description: "Suggestions provided to avoid threats safely.",
+      step: "التنقّل",
+      description: "اقتراحات ذكية تساعدك تتجنب الخطر بأمان.",
     },
   ];
 
@@ -34,7 +34,7 @@ function Timeline() {
       className="relative px-6 py-16 max-w-3xl mx-auto"
     >
       <h2 className="text-3xl md:text-4xl font-bold text-yellow-300 text-center mb-12">
-        How It Works
+        كيف يعمل بصّار؟
       </h2>
 
       {/* SVG Path */}
@@ -110,3 +110,4 @@ function Timeline() {
 }
 
 export default Timeline;
+

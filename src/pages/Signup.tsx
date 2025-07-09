@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-
 import { Link, useNavigate } from "react-router";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -26,14 +27,14 @@ export default function SignUpPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, phone, email, password })
+        body: JSON.stringify({ name, phone, email, password }),
       });
 
       const data = await res.json();
 
       if (res.ok && data.token) {
         alert("تم التسجيل بنجاح!");
-        localStorage.setItem("token", data.token); // حفظ التوكن
+        localStorage.setItem("token", data.token);
         navigate("/map");
       } else {
         alert(data.message || "حدث خطأ أثناء التسجيل");
@@ -55,73 +56,46 @@ export default function SignUpPage() {
         </div>
 
         <p className="text-[#272343] text-center mt-1 mb-6 text-sm">
-          {" "}
-          لتكن على بصيرة{" "}
+          لتكن على بصيرة
         </p>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-
-
-
           <div>
-            <label className=" block text-sm font-medium text-[#272343] mb-1">
-              الاسم
+            <label className="block text-sm font-medium text-[#272343] mb-1">
+              الإسم
             </label>
             <input
               type="text"
-
-              
-              placeholder=" "
               className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-
               value={name}
               onChange={(e) => setName(e.target.value)}
-
               required
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-[#272343] mb-1">
               رقم الجوال
             </label>
             <input
               type="tel"
-
-              placeholder=""
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-
+              placeholder="+966"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-
               required
             />
           </div>
 
-
-
-
-       
-
           <div>
-
             <label className="block text-sm font-medium text-[#272343] mb-1">
-              البريد الألكتروني
+              البريد الإلكتروني
             </label>
             <input
               type="email"
-              placeholder=" "
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"/>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#272343] mb-1">
-              البريد الألكتروني
-            </label>
-            <input
-              type="email"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-
               required
             />
           </div>
@@ -132,8 +106,7 @@ export default function SignUpPage() {
             </label>
             <input
               type={showPassword ? "text" : "password"}
-              placeholder=""
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -141,71 +114,56 @@ export default function SignUpPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-
               className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
             >
               {showPassword ? (
-                <EyeSlashIcon className="w-5 h-5" />
+                <EyeIcon className="w-5 h-5 cursor-pointer" />
               ) : (
-                <EyeIcon className="w-5 h-5" />
+                <EyeSlashIcon className="w-5 h-5 cursor-pointer" />
               )}
             </button>
           </div>
 
           <div className="relative">
             <label className="block text-sm font-medium text-[#272343] mb-1">
-
-
-تأكيد كلمة السر            </label>
-
+              تأكيد كلمة السر
+            </label>
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder=""
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"/>
-
-            <input
-              type={showPassword ? "text" : "password"}
+              type={showConfirmPassword ? "text" : "password"}
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-
               required
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
             >
-              {showPassword ? (
-                <EyeSlashIcon className="w-5 h-5" />
+              {showConfirmPassword ? (
+                <EyeIcon className="w-5 h-5 cursor-pointer" />
               ) : (
-                <EyeIcon className="w-5 h-5" />
+                <EyeSlashIcon className="w-5 h-5 cursor-pointer" />
               )}
             </button>
           </div>
 
           <button
             type="submit"
-
-
             className="w-full mt-5 bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-xl transition"
-
           >
             تسجيل
           </button>
+
           <div className="flex justify-center items-center">
             <p className="p-1 text-[#272343]"> لديك حساب ؟! </p>
             <Link className="underline text-[#272343]" to="/signin">
-              {" "}
               تسجيل الدخول
             </Link>
           </div>
         </form>
-
-
-    </div></div>
-
-   
-
+      </div>
+    </div>
   );
 }
+

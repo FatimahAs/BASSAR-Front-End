@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router";
 
 export default function SignUpPage() {
@@ -10,35 +10,35 @@ export default function SignUpPage() {
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await fetch("http://localhost:3000/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        phoneNumber: phoneNumber, 
-        password: password,
-      }),
-    });
+    try {
+      const res = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber,
+          password: password,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok && data.token) {
-      alert("تم تسجيل الدخول بنجاح");
-      // خزّن التوكن
-      localStorage.setItem("token", data.token);
-      navigate("/map");
-    } else {
-      alert(data.message || "رقم الجوال أو كلمة السر غير صحيحة");
+      if (res.ok && data.token) {
+        alert("تم تسجيل الدخول بنجاح");
+        // خزّن التوكن
+        localStorage.setItem("token", data.token);
+        navigate("/map");
+      } else {
+        alert(data.message || "رقم الجوال أو كلمة السر غير صحيحة");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("حدث خطأ أثناء تسجيل الدخول");
     }
-  } catch (err) {
-    console.error(err);
-    alert("حدث خطأ أثناء تسجيل الدخول");
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-90 via-yellow-100 to-white-200 px-4">
@@ -50,21 +50,16 @@ export default function SignUpPage() {
           </h2>
         </div>
 
-        
-         
-
-
-        <p className="text-[#272343] text-center mt-1 mb-6 text-sm"> لتكن على بصيرة </p>
-
-        <form className="space-y-4" onSubmit={handleLogin}>
-
-
         <p className="text-[#272343] text-center mt-1 mb-6 text-sm">
           {" "}
           لتكن على بصيرة{" "}
         </p>
 
-      
+        <form className="space-y-4" onSubmit={handleLogin}>
+          <p className="text-[#272343] text-center mt-1 mb-6 text-sm">
+            {" "}
+            لتكن على بصيرة{" "}
+          </p>
 
           <div>
             <label className="block text-sm font-medium text-[#272343] mb-1">
@@ -72,18 +67,13 @@ export default function SignUpPage() {
             </label>
             <input
               type="tel"
-
-              placeholder=""
+              placeholder="+966"
               value={phoneNumber}
               onChange={(e) => setphoneNumber(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-
+              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />
           </div>
-
-
-
 
           <div className="relative">
             <label className="block text-sm font-medium text-[#272343] mb-1">
@@ -91,33 +81,27 @@ export default function SignUpPage() {
             </label>
             <input
               type={showPassword ? "text" : "password"}
-
               placeholder=""
               className="w-full px-4 py-2 border border-[#F8D203] rounded-xl  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-
               required
             />
             <button
               type="button"
-
               className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
-
-
+              onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeSlashIcon className="w-5 h-5" />
+                <EyeIcon className="w-5 h-5 cursor-pointer" />
               ) : (
-                <EyeIcon className="w-5 h-5" />
+                <EyeSlashIcon className="w-5 h-5 cursor-pointer" />
               )}
             </button>
           </div>
           <button
             type="submit"
-            className="w-full mt-5 bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-xl transition"
-
+            className="w-full mt-5 bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-xl transition cursor-pointer"
           >
             تسجيل الدخول
           </button>
@@ -133,3 +117,4 @@ export default function SignUpPage() {
     </div>
   );
 }
+
