@@ -103,22 +103,7 @@ const AdminDashboard = () => {
           <h4 className="text-lg font-semibold mb-4">Trips</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {dangers.map((danger) => (
-              //<Card  className="relative">
-              //  <span className="absolute top-2 right-2 bg-yellow-300 text-xs px-2 py-1 rounded-full font-bold">New</span>
-                
-              //  <div className="h-32 bg-white rounded-t flex flex-col justify-center items-center">
-              //    <img src={danger.image}  className="w-full h-48 object-cover"/>
-              //  </div>
-              //  <CardContent className="p-4 border-1 rounded-xl border-[#f2dd3b64]">
-                 
-              //    <h5 className="font-bold text-sm">{danger.position}</h5>
-              //    <p className="text-xs text-gray-500">{danger.city} </p>
-              //    <div className="flex flex-wrap gap-2 mt-2">
-              //      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{ danger.tag}</span>
-              //      {/*<span className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">Beach</span>*/}
-              //    </div>
-              //  </CardContent>
-              //</Card>
+           
 
               <div className="rounded-xl overflow-hidden border border-yellow-200 shadow-md">
   <div className="relative">

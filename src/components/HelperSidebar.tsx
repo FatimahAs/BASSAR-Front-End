@@ -9,6 +9,7 @@ export default function AdminSidebar() {
   const currentPath = location.pathname;
 
 
+
   const handleOverlayClick = () => {
     setMenuOpen(false);
   };
@@ -27,6 +28,7 @@ export default function AdminSidebar() {
           </div>
 
        
+
       
     
         
@@ -80,6 +82,7 @@ export default function AdminSidebar() {
         <LogOut className="mr-auto text-red-500 cursor-pointer" />
       </div>
     </nav>
+
 
 
 

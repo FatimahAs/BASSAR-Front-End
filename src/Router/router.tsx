@@ -14,8 +14,13 @@ import HelperHistory from "../pages/helper/HelperHistory";
 import HelpList from "../pages/helper/HelpList";
 import UserList from "../pages/user/UserList";
 import UserHistory from "../pages/user/UserHistory";
+
 import UserDanger from "../pages/user/UserDanger";
 
+
+
+import Map from "../components/Map";
+import ServiceList from "../components/ServiceList";
 
 
 function Layout() {
@@ -49,13 +54,24 @@ const router = createBrowserRouter([
       { path: "user", element: <UserDashboard /> },
          { path: "userhistory", element: <UserHistory /> },
       { path: "userlist", element: <UserList /> },
+
        { path: "dangerlist", element: <UserDanger /> },
+
+
+      { path: "/service-list/:serviceType", element: <ServiceList /> },
 
 	
 	  { path: "signin", element: <Signin /> },
 	  {path: "signup", element: <Signup/>}
     ],
   },
+
+
+  {
+    path: "/map",
+    element: <Map />
+  },
+
 ]);
 
 function Router() {

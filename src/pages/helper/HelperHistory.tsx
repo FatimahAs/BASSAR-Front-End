@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "../../components/ui/Button";
+
 import HelperSidebar from "../../components/HelperSidebar";
 import { ArrowUpRight, Bell,SaudiRiyal } from "lucide-react";
 type Trip = {
@@ -69,16 +70,7 @@ export default function HelperHistory() {
                  <div className="p-4">
                 <h2 className="text-lg font-semibold">{trip.title}</h2>
                 <div className="mt-2 flex flex-row justify-between items-center"><p className="text-lg text-gray-500">{trip.price}</p><SaudiRiyal color="#f8d203" /></div>
-                {/*<div className="mt-2 flex flex-wrap gap-1">
-                  {trip.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs bg-gray-100 px-2 py-0.5 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>*/}
+            
               </div>
                 </div>
 
@@ -90,27 +82,7 @@ export default function HelperHistory() {
           ))}
         </div>
 
-        {/* Pagination */}
-        {/*<div className="flex justify-center mt-6 space-x-2">
-          <button className="px-3 py-1 bg-white border border-[#d8d0d090] rounded hover:bg-gray-100">
-            Previous
-          </button>
-          {[1, 2, 3, 4, 5, 6].map((page) => (
-            <button
-              key={page}
-              className={`px-3 py-1 rounded ${
-                page === 1
-                  ? "bg-yellow-400 font-semibold"
-                  : "bg-white border border-[#d8d0d090] hover:bg-gray-100"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button className="px-3 py-1 bg-white border rounded border-[#d8d0d090] hover:bg-gray-100">
-            Next
-          </button>
-			  </div>*/}
+      
 			  
       </main>
     </div>

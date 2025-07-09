@@ -1,54 +1,11 @@
 import React, { useState } from "react";
+
 import { Button } from "../../components/ui/Button";
 import { Bell,SaudiRiyal,Trash,Star,Trash2 } from "lucide-react";
 import UserSidebar from "../../components/UserSidebar";
 
 
-//type User = {
-//  name: string;
-//  email: string;
-//  dateJoined: string;
-  
-//   rating: number;
-//  services: "سطحة" | "بطارية" | "شخص للمساعدة" | "وقود";
-//  status: "رفض" | "قبول" | "مراجعة";
 
-//  avatar: string | null;
-//};
-
-//const users: User[] = [
- 
-//  {
-//    name: "Michael Johnson",
-//    email: "phoenix@jsmastery.pro",
-//    dateJoined: "Jan 6, 2022",
-//       rating: 5,
-//    services: 'بطارية',
-//    status: "رفض",
-//    avatar: "https://randomuser.me/api/portraits/men/45.jpg",
-//  },
-//  {
-//    name: "Jason Wilson",
-//    email: "demi@jsmastery.pro",
-//    dateJoined: "Jan 5, 2022",
-//       rating: 4,
-//    services: 'وقود',
-//    status: "قبول",
-//    avatar: "https://randomuser.me/api/portraits/men/25.jpg",
-//  },
-  
-//  {
-//    name: "Kevin Taylor",
-//    email: "natali@jsmastery.pro",
-//    dateJoined: "Jan 5, 2022",
-//      rating: 3,
-//    services: 'سطحة',
-//    status: "مراجعة",
-//    avatar: "https://randomuser.me/api/portraits/men/56.jpg",
-//  },
-  
- 
-//];
 type User = {
   id: string;
   name: string;
@@ -98,6 +55,7 @@ export default function UserHistory() {
   const closeModal = () => {
     setSelectedUser(null);
   };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
        <UserSidebar/>
@@ -109,7 +67,9 @@ export default function UserHistory() {
             <h2 className="text-xl font-bold">Welcome User 👋</h2>
         
           </div>
+
           <Button className="bg-[#F8D203] text-black rounded-full flex gap-2 items-center">
+
            <Bell color="#ffffff" />
           </Button>
         </div>
@@ -289,27 +249,10 @@ export default function UserHistory() {
   </div>
 )}
 
-       {/* Pagination */}
-        <div className="flex justify-center mt-6 space-x-2">
-          <button className="px-3 py-1 bg-white border border-[#d8d0d090] rounded hover:bg-gray-100">
-            السابق
-          </button>
-          {[1, 2, 3, 4, 5, 6].map((page) => (
-            <button
-              key={page}
-              className={`px-3 py-1 rounded ${
-                page === 1
-                  ? "bg-yellow-400 font-semibold"
-                  : "bg-white border border-[#d8d0d090] hover:bg-gray-100"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button className="px-3 py-1 bg-white border rounded border-[#d8d0d090] hover:bg-gray-100">
-            التالي
-          </button>
-			  </div>
+  
+      
+
+
 			  
       </main>
     </div>

@@ -1,26 +1,58 @@
 import React, { useState } from "react";
 import { Button } from "./ui/Button";
-import { Link,useLocation } from "react-router"
+import { Link,useLocation,useNavigate } from "react-router"
 import {  LogOut } from "lucide-react";
 
 export default function AdminSidebar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
-
+  const navigate = useNavigate();
 
 
   const handleOverlayClick = () => {
     setMenuOpen(false);
   };
+
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("لا يوجد مستخدم مسجل دخول");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/api/users/logout", {
+        method: "POST",
+        headers: {
+          token: `${token}`,
+        },
+      });
+
+      if (res.ok) {
+        localStorage.removeItem("token");
+        alert("تم تسجيل الخروج بنجاح");
+        navigate("/signin");
+      } else {
+        alert("فشل تسجيل الخروج");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("خطأ في الاتصال بالخادم");
+    }
+  };
+
   return (
-	  <div className="min-h-screen bg-gray-50 flex">
-		     {menuOpen && (
+    <div className="min-h-screen bg-gray-50 flex">
+      {menuOpen && (
+
         <div
           className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
           onClick={handleOverlayClick}
         ></div>
       )}
+
       {/* Sidebar */}
       <aside className="w-64 bg-white p-6 border-r border-[#d8d0d090] hidden md:block">
         <div className="flex justify-center items-center">
@@ -99,4 +131,10 @@ export default function AdminSidebar() {
 	 </div>
 
   )
+
+
+    
+   
+  ;
+
 }
