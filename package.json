@@ -56,9 +56,13 @@
 
         "react-leaflet": "^5.0.0",
 
+        "react-map-gl": "^8.0.4",
+
         "react-router": "^7.6.3",
 
         "recharts": "^3.0.2",
+
+        "sweetalert2": "^11.22.2",
 
         "tailwind-merge": "^3.3.1",
 

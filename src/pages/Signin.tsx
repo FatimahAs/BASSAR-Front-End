@@ -50,10 +50,7 @@ export default function SignUpPage() {
           </h2>
         </div>
 
-        <p className="text-[#272343] text-center mt-1 mb-6 text-sm">
-          {" "}
-          لتكن على بصيرة{" "}
-        </p>
+      
 
         <form className="space-y-4" onSubmit={handleLogin}>
           <p className="text-[#272343] text-center mt-1 mb-6 text-sm">

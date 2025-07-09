@@ -161,6 +161,12 @@ export default function SignUpPage() {
               تسجيل الدخول
             </Link>
           </div>
+          <div className="flex justify-center items-center">
+            <p className="p-1 text-[#272343]">   سجل كمساعد او مقدم خدمة    </p>
+            <Link className="underline text-[#272343]" to="/signuphelper">
+             تسجيل
+            </Link>
+          </div>
         </form>
       </div>
     </div>

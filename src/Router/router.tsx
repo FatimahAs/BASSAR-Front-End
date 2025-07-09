@@ -21,6 +21,7 @@ import UserDanger from "../pages/user/UserDanger";
 
 import Map from "../components/Map";
 import ServiceList from "../components/ServiceList";
+import SignUpHelper from "../pages/SignupHelper";
 
 
 function Layout() {
@@ -62,7 +63,8 @@ const router = createBrowserRouter([
 
 	
 	  { path: "signin", element: <Signin /> },
-	  {path: "signup", element: <Signup/>}
+      { path: "signup", element: <Signup /> },
+    {path:"signuphelper", element:<SignUpHelper/>}
     ],
   },
 
