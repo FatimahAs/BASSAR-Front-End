@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import { Link, useNavigate } from "react-router";
 
@@ -44,10 +45,10 @@ export default function SignUpPage() {
       <div className="relative bg-white/60 backdrop-blur-xl border border-white/70 rounded-3xl shadow-xl w-full max-w-md p-8 md:p-10">
         <div className="flex flex-col justify-center items-center">
           <img src="/assets/logo-remove.png" alt="logo" className="w-30" />
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center">بصّار</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center">
+            بصّار
+          </h2>
         </div>
-        
-        <p className="text-[#272343] text-center mt-1 mb-6 text-sm"> لتكن على بصيرة </p>
 
         
          
@@ -56,6 +57,14 @@ export default function SignUpPage() {
         <p className="text-[#272343] text-center mt-1 mb-6 text-sm"> لتكن على بصيرة </p>
 
         <form className="space-y-4" onSubmit={handleLogin}>
+
+
+        <p className="text-[#272343] text-center mt-1 mb-6 text-sm">
+          {" "}
+          لتكن على بصيرة{" "}
+        </p>
+
+      
 
           <div>
             <label className="block text-sm font-medium text-[#272343] mb-1">
@@ -72,6 +81,7 @@ export default function SignUpPage() {
               required
             />
           </div>
+
 
 
 
@@ -104,28 +114,22 @@ export default function SignUpPage() {
               )}
             </button>
           </div>
-
-
-       
-
           <button
             type="submit"
             className="w-full mt-5 bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-xl transition"
+
           >
-             تسجيل الدخول
+            تسجيل الدخول
           </button>
           <div className="flex justify-center items-center">
-            <p className="p-1 text-[#272343]"> لاتملك  حساب ؟! </p>
-            <Link className="underline text-[#272343]" to="/signup"> تسجيل </Link> 
-         </div>
+            <p className="p-1 text-[#272343]"> لاتملك حساب ؟! </p>
+            <Link className="underline text-[#272343]" to="/signup">
+              {" "}
+              تسجيل{" "}
+            </Link>
+          </div>
         </form>
-
-    
-
-      
-
       </div>
     </div>
   );
 }
-

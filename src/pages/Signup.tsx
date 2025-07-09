@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+
 import { Link, useNavigate } from "react-router";
 
 export default function SignUpPage() {
@@ -60,6 +61,8 @@ export default function SignUpPage() {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
 
+
+
           <div>
             <label className=" block text-sm font-medium text-[#272343] mb-1">
               الاسم
@@ -96,9 +99,13 @@ export default function SignUpPage() {
 
 
 
-            <div>
+
+       
+
+          <div>
+
             <label className="block text-sm font-medium text-[#272343] mb-1">
-              البريد الألكتروني 
+              البريد الألكتروني
             </label>
             <input
               type="email"
@@ -148,7 +155,9 @@ export default function SignUpPage() {
           <div className="relative">
             <label className="block text-sm font-medium text-[#272343] mb-1">
 
+
 تأكيد كلمة السر            </label>
+
             <input
               type={showPassword ? "text" : "password"}
               placeholder=""
@@ -178,18 +187,25 @@ export default function SignUpPage() {
           <button
             type="submit"
 
+
             className="w-full mt-5 bg-[#F8D203] hover:bg-[#f8d30381] text-[#272343] font-semibold py-2 rounded-xl transition"
+
           >
-             تسجيل
+            تسجيل
           </button>
           <div className="flex justify-center items-center">
             <p className="p-1 text-[#272343]"> لديك حساب ؟! </p>
-            <Link className="underline text-[#272343]" to="/signin"> تسجيل الدخول</Link> 
-         </div>
+            <Link className="underline text-[#272343]" to="/signin">
+              {" "}
+              تسجيل الدخول
+            </Link>
+          </div>
         </form>
 
+
     </div></div>
+
+   
+
   );
 }
-
-
