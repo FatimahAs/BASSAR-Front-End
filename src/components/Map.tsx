@@ -1,22 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl, { Map } from "mapbox-gl";
-import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
+import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 //import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { FaExclamationTriangle, FaHandsHelping } from "react-icons/fa";
 import { RiChatHistoryFill } from "react-icons/ri";
-//import camelWarningIcon from '../assets/den3.png';
-//import rockfallIcon from '../assets/den2.png';
-//import dangerIcon from '../assets/den1.png';
-import '../App.css';
+
 import axios from "axios";
+import '../App.css'
+const camelWarningIcon = (
+  <img src='../assets/den3.png' alt="تحذير جمال" style={{ width: 40, height: 40 }} />
+);
+const rockfallIcon = 'src/assets/den2.png';
+const dangerIcon = 'src/assets/den1.png';
 
-
-const camelWarningIcon = "../assets/den3.png";
-const rockfallIcon = '../assets/den2.png';
-const dangerIcon = '../assets/den1.png';
-
-export const Access_Token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+export const Access_Token = "pk.eyJ1IjoiYWlzaGFoMTAxIiwiYSI6ImNtY2lvampibzE3cHUybHF2czJtY2swYWwifQ.rX3EFhb68jdKgbLqd2GUuA";
    mapboxgl.accessToken = Access_Token
   mapboxgl.setRTLTextPlugin(
   'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
@@ -94,6 +92,62 @@ if (defaultPanel && customPanel) {
   }
 }
     directionsRef.current = directions;
+    const warningLocations: { coordinates: [number, number]; message: string; icon: any }[] = [
+    { coordinates: [46.5, 24.7], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.48, 24.71], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.49, 24.68], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.51, 24.72], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [46.52, 24.69], message: "تحذير: عبور جمال" , icon: camelWarningIcon},
+    { coordinates: [46.47, 24.7],  message: "تحذير: عبور جمال", icon: camelWarningIcon },
+    { coordinates: [50.1, 18.3], message: "تحذير: عبور جمال", icon: camelWarningIcon },   
+    { coordinates: [42.7, 19.5], message: "تحذير: عبور جمال", icon: camelWarningIcon },   
+    { coordinates: [39.5, 21.5], message: "تحذير: عبور جمال", icon: camelWarningIcon },   
+    { coordinates: [45.4, 25.1], message: "تحذير: عبور جمال", icon: camelWarningIcon },   
+    { coordinates: [41.8, 17.5], message: "تحذير: عبور جمال", icon: camelWarningIcon },   
+    { coordinates: [49.8, 26.3], message: "تحذير: منطقة خطرة", icon: dangerIcon },       
+    { coordinates: [38.5, 24.8], message: "تحذير: منطقة خطرة", icon: dangerIcon },       
+    { coordinates: [41.2, 27.0], message: "تحذير: منطقة خطرة", icon: dangerIcon },      
+    { coordinates: [43.9, 22.3], message: "تحذير: منطقة خطرة", icon: dangerIcon },       
+    { coordinates: [44.7, 20.2], message: "تحذير: منطقة خطرة", icon: dangerIcon },      
+    { coordinates: [46.6, 24.8], message: "تحذير: حيوانات سائبة", icon: dangerIcon  },
+    { coordinates: [46.55, 24.75], message: "تحذير: منطقة خطرة", icon: dangerIcon },
+    { coordinates: [46.53, 24.74], message: "تحذير: منطقة خطرة", icon: dangerIcon  },
+    { coordinates: [46.57, 24.76], message: "تحذير: منطقة خطرة", icon: dangerIcon },
+    { coordinates: [46.56, 24.73], message: "تحذير: منطقة خطرة", icon: dangerIcon  },
+    { coordinates: [46.54, 24.76], message: "تحذير: منطقة خطرة", icon: dangerIcon  },
+    { coordinates: [46.58, 24.75], message: "تحذير: منطقة خطرة" , icon: dangerIcon },
+    { coordinates: [36.5, 30.0], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon },  
+    { coordinates: [35.5, 27.5], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon },  
+    { coordinates: [38.1, 20.0], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon }, 
+    { coordinates: [42.0, 18.9], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon },  
+    { coordinates: [46.2, 23.8], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon },  
+    { coordinates: [46.68, 24.68], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon },
+    { coordinates: [46.67, 24.69], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon  },
+    { coordinates: [46.66, 24.685], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon  },
+    { coordinates: [46.69, 24.695], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon   },
+    { coordinates: [46.70, 24.69], message: "تحذير: خطر انزلاق الصخور", icon: rockfallIcon   },
+  // ── Central (Riyadh) ──
+  { coordinates: [46.6753, 24.7136], message: "تحذير: طريق غير ممهد", icon: dangerIcon },
+  { coordinates: [46.7000, 24.7500], message: "تحذير: منطقة رمال متحركة", icon: rockfallIcon },
+  { coordinates: [46.6500, 24.6800], message: "تحذير: عبور جمال", icon: camelWarningIcon },
+  { coordinates: [46.6200, 24.7300], message: "تحذير: منعطف خطير", icon: dangerIcon },
+  { coordinates: [46.6800, 24.7200], message: "تحذير: مطب صناعي", icon: dangerIcon },
+
+];
+console.log(camelWarningIcon)
+warningLocations.forEach((location) => {
+  const el = document.createElement("div");
+  el.style.backgroundImage = `url(${location.icon})`;
+  el.style.width = "32px";
+  el.style.height = "32px";
+  el.style.backgroundSize = "contain";
+  el.style.backgroundRepeat = "no-repeat";
+
+  new mapboxgl.Marker(el)
+    .setLngLat(location.coordinates)
+    .setPopup(new mapboxgl.Popup().setText(location.message))
+    .addTo(mapRef.current!);
+});
     //observer to detect when inputs exist and set placeholders
     observerRef.current = new MutationObserver(() => {
       const originContainer = document.getElementById("mapbox-directions-origin-input");
@@ -227,7 +281,7 @@ if (defaultPanel && customPanel) {
   }
 };
            const getDangerIcon = (name: string): string => {
-          if (name.includes("جمال")) return camelWarningIcon;
+          if (name.includes("جمال"))  camelWarningIcon;
           if (name.includes("انزلاق") || name.includes("صخور")) return rockfallIcon;
           return dangerIcon;
         };
@@ -361,7 +415,7 @@ function showNotification(message: string) {
     <div id="directions-panel" className="panel"
     style={{ 
       padding: '10px', maxHeight: '100%', overflowY: 'auto', 
-      color: '#000', fontFamily: 'Arial, sans-serif'}} >
+      color: '#000', fontFamily: 'Arial, sans-serif',width:'30%'}} >
       <div className="buttonsDiv" 
       style={{ display: 'flex',flexDirection:
        'column', justifyContent: 'center', 
@@ -374,7 +428,7 @@ function showNotification(message: string) {
           display: "flex",
           gap: "5px",
           justifyContent: 'center',
-          width: "100%",
+          width: "90%",
           flexShrink: "0"
          }} >
            {/* بلّغ */}
@@ -494,7 +548,7 @@ function showNotification(message: string) {
       {["سطحة", "مساعد شخصي", "بطارية", "بنشر", "وقود"].map((type) => (
         <button
           key={type}
-          onClick={() => handleHelpRequest(type)}
+          //onClick={() => handleHelpRequest(type)}
           style={{
             display: "block",
             width: "100%",

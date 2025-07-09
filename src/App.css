@@ -150,10 +150,10 @@ body {
 }
 
 #directions-panel {
-    width: 23%;
-    max-width: 24rem;
+    /*width: 23%;
+    max-width: 24rem;*/
     max-height: 100%;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
     background-color: #f3f8fe !important;
     backdrop-filter: blur(40px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
