@@ -121,7 +121,6 @@ if (defaultPanel && customPanel) {
       childList: true,
       subtree: true,
     });
-
     // RTL text fixes on style load
     mapRef.current.on("style.load", () => {
       const layers = mapRef.current?.getStyle().layers;
@@ -262,45 +261,99 @@ if (defaultPanel && customPanel) {
 
 
   //start trip with live location tracking
-  const handleStartTrip = () => {
-    if (!navigator.geolocation || !mapRef.current) {
-      alert("Geolocation not supported");
-      return;
+const handleStartTrip = () => {
+  if (!navigator.geolocation || !mapRef.current) {
+    alert("Geolocation غير مدعومة");
+    return;
+  }
+
+
+  if (watchIdRef.current !== null) {
+    navigator.geolocation.clearWatch(watchIdRef.current);
+  }
+
+  watchIdRef.current = navigator.geolocation.watchPosition(
+    (pos) => {
+      const coords: [number, number] = [pos.coords.longitude, pos.coords.latitude];
+
+      if (!userMarkerRef.current) {
+        userMarkerRef.current = new mapboxgl.Marker({ color: "#F8D203" })
+          .setLngLat(coords)
+          .addTo(mapRef.current!);
+      } else {
+        userMarkerRef.current.setLngLat(coords);
+      }
+
+      mapRef.current?.flyTo({
+        center: coords,
+        zoom: 16,
+        speed: 0.8,
+        essential: true,
+      });
+
+      directionsRef.current?.setOrigin(coords);
+
+      //check if user is near danger zones
+      checkNearbyDangerZones(coords);
+    },
+    (error) => {
+      console.error("خطأ في تتبع الموقع:", error);
+      showNotification("تعذر تتبع الموقع");
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 20000,
     }
+  );
+};
 
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      (pos) => {
-        const coords: [number, number] = [pos.coords.longitude, pos.coords.latitude];
+const checkNearbyDangerZones = async (coords: [number, number]) => {
+  try {
+    const { data: dangerZones } = await axios.get("https://localhost:3000/api/danger-zones");
 
-        if (!userMarkerRef.current) {
-          userMarkerRef.current = new mapboxgl.Marker({ color: "blue" })
-            .setLngLat(coords)
-            .addTo(mapRef.current!);
-        } else {
-          userMarkerRef.current.setLngLat(coords);
-        }
+    const nearbyZones = dangerZones.filter((zone: any) => {
+      const threshold = 0.01; 
+      return (
+        Math.abs(zone.location.lng - coords[0]) < threshold &&
+        Math.abs(zone.location.lat - coords[1]) < threshold
+      );
+    });
 
-        directionsRef.current?.setOrigin(coords);
+    nearbyZones.forEach((zone: any) => {
+      showNotification(`⚠️ منطقة خطرة قريبة: ${zone.name}`);
+    });
+  } catch (err) {
+    console.error("فشل جلب بيانات المناطق الخطرة", err);
+  }
+};
+function showNotification(message: string) {
+  const container = document.getElementById("notification-container");
+  if (!container) return;
 
-        mapRef.current?.flyTo({
-          center: coords,
-          zoom: 17,
-          essential: true,
-        });
-      },
-      (error) => {
-        console.error("Error watching position:", error);
-      },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 }
-    );
-  };
+  const notification = document.createElement("div");
+  notification.className = "notification";
+  notification.innerText = message;
+
+  container.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 5000); 
+}
 
  return(
   <React.Fragment>
     <div className="layout-container">
+      <div id="notification-container" className="notification-container"></div>
     <div ref={mapContainerRef} className="map-container"/>
-
-    <div id="directions-panel" 
+      <button className="panel-toggle" onClick={() => {
+        const panel = document.getElementById("directions-panel");
+        panel?.classList.toggle("collapsed");
+      }}>
+        ☰ القائمة
+      </button>
+    <div id="directions-panel" className="panel"
     style={{ 
       padding: '10px', maxHeight: '100%', overflowY: 'auto', 
       color: '#000', fontFamily: 'Arial, sans-serif'}} >
