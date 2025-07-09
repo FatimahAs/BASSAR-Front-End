@@ -73,7 +73,6 @@ export default function SignUpPage() {
 
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
 
               required
             />
@@ -90,7 +89,6 @@ export default function SignUpPage() {
 
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
 
               required
             />
@@ -127,14 +125,10 @@ export default function SignUpPage() {
             </label>
             <input
               type={showPassword ? "text" : "password"}
-
               placeholder=""
               className="w-full px-4 py-2 border border-[#F8D203] rounded-xl  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-full  focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-
               required
             />
             <button
@@ -142,9 +136,6 @@ export default function SignUpPage() {
               onClick={() => setShowPassword(!showPassword)}
 
               className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
-
-              className="absolute left-3 top-8 text-[#272343] hover:text-gray-700"
-
             >
               {showPassword ? (
                 <EyeSlashIcon className="w-5 h-5" />
@@ -175,9 +166,6 @@ export default function SignUpPage() {
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
-
-              className="absolute left-3 top-8 text-[#272343] hover:text-gray-700"
-
             >
               {showPassword ? (
                 <EyeSlashIcon className="w-5 h-5" />
