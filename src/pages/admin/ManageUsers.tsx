@@ -1,5 +1,6 @@
-import React from "react";
+import React,{useState} from "react";
 import AdminSidebar from "../../components/AdminSidebar";
+import {Plus,SaudiRiyal,Trash2,Check} from "lucide-react"
 
 type User = {
   name: string;
@@ -77,7 +78,28 @@ const users: User[] = [
   },
 ];
 
+
 const ManageUsers: React.FC = () => {
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [newRating, setNewRating] = useState<number>(0);
+
+
+  const [isModalOpen, setModalOpen] = useState(false);
+const [name, setName] = useState("");
+const [email, setEmail] = useState("");
+const [phone, setPhone] = useState("");
+const [location, setLocation] = useState("");
+const [password, setPassword] = useState("");
+const [role, setRole] = useState<"User" | "Helper">("User");
+const [services, setServices] = useState<string[]>([]);
+  const openModal = (user: User) => {
+    setSelectedUser(user);
+    
+  };
+
+  const closeModal = () => {
+    setSelectedUser(null);
+  };
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       <AdminSidebar />
@@ -86,61 +108,43 @@ const ManageUsers: React.FC = () => {
       <main className="flex-1 p-4 md:p-8">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-2">
           <div>
-            <h1 className="text-xl md:text-2xl font-semibold">Manage Users</h1>
+            <h1 className="text-xl md:text-2xl font-semibold">ادارة المستخدمين  </h1>
             <p className="text-gray-500 text-sm">
-              Filter, sort, and access detailed user profiles
+              يمكنك ادارة المستخدمين مثل تعديل وحذف واضافة
             </p>
           </div>
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-medium w-full md:w-auto cursor-pointer">
-            Add new user
+          <button onClick={() => setModalOpen(true)} className="bg-[#F8D203] hover:bg-yellow-500 text-white px-4 py-2 rounded font-medium w-full md:w-auto">
+          <div className="flex flex-row"><p>اضافة مستخدمين </p>  <Plus className="mr-2"/></div>
           </button>
         </div>
 
         <div className="bg-white shadow rounded overflow-x-auto">
-          <table className="min-w-full text-left text-sm">
+          <table className="min-w-full text-right text-sm">
             <thead className="border-b border-[#7a77777e] bg-gray-50">
               <tr>
-                <th className="p-4 font-medium">Name</th>
+                <th className="p-4 font-medium">الاسم</th>
                 <th className="p-4 font-medium hidden sm:table-cell">
-                  Email Address
+                 البريد الالكتروني
                 </th>
-                <th className="p-4 font-medium hidden md:table-cell">
-                  Date Joined
-                </th>
-                <th className="p-4 font-medium hidden lg:table-cell">
-                  Itinerary Created
-                </th>
-                <th className="p-4 font-medium">Status</th>
+              
+               
+                <th className="p-4 font-medium">الحاله</th>
                 <th className="p-4 font-medium"></th>
               </tr>
             </thead>
             <tbody>
-              {users.map((user, idx) => (
+              {users.map((user) => (
                 <tr
-                  key={idx}
+                 
                   className="border-b border-[#c5c1c1a6] hover:bg-gray-50 transition-colors"
                 >
                   <td className="p-4 flex items-center gap-3">
-                    {user.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="w-8 h-8 rounded-full"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">
-                        {user.name.charAt(0)}
-                      </div>
-                    )}
-                    <span>{user.name}</span>
+                   {user.name}
+                   
                   </td>
                   <td className="p-4 hidden sm:table-cell">{user.email}</td>
-                  <td className="p-4 hidden md:table-cell">
-                    {user.dateJoined}
-                  </td>
-                  <td className="p-4 hidden lg:table-cell">
-                    {user.itineraries.toString().padStart(2, "0")}
-                  </td>
+                 
+                 
                   <td className="p-4">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -152,9 +156,14 @@ const ManageUsers: React.FC = () => {
                       {user.status}
                     </span>
                   </td>
+                    <td className="p-4">
+                   <button  onClick={() => openModal(user)} className="bg-blue-100 text-blue-600 rounded px-2 py-1 hover:bg-gray-400">
+                    المزيد
+                    </button>
+                  </td>
                   <td className="p-4">
                     <button className="text-gray-400 hover:text-gray-600">
-                      🗑️
+                      <Trash2 size={18} />
                     </button>
                   </td>
                 </tr>
@@ -163,29 +172,188 @@ const ManageUsers: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-2">
-          <button className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
-            ⬅️ Previous
-          </button>
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5, 6].map((page) => (
-              <button
-                key={page}
-                className={`w-8 h-8 rounded ${
-                  page === 1
-                    ? "bg-yellow-400 text-black font-medium"
-                    : "hover:bg-gray-200 text-gray-700"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-          </div>
-          <button className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
-            Next ➡️
-          </button>
+       
+
+         {/* Modal */}
+ {isModalOpen && (
+          <div className="fixed inset-0 bg-[#ffffff0b] bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+              <div className="bg-white w-full max-w-lg max-h-[90vh]  overflow-y-auto rounded-xl shadow-lg">
+
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        // هنا تضيف دالة إرسال البيانات للـAPI
+        console.log({ name, email, phone, location, password, role, services });
+        setModalOpen(false); // إغلاق بعد الحفظ
+      }}
+      className="bg-white p-6 rounded-xl w-[90%] max-w-md relative transform transition-all duration-300 scale-95 opacity-0 animate-fadeIn"
+    >
+      <h2 className="text-lg font-bold mb-4">إضافة / تعديل مستخدم</h2>
+
+      {/* الاسم */}
+      <div className="mb-3">
+        <label className="block text-sm font-medium mb-1">الاسم</label>
+        <input type="text" className="w-full border border-[#7a77777e] rounded px-3 py-2" required value={name} onChange={(e) => setName(e.target.value)} />
+      </div>
+
+      {/* الايميل */}
+      <div className="mb-3">
+        <label className="block text-sm font-medium mb-1">البريد الإلكتروني</label>
+        <input type="email" className="w-full border border-[#7a77777e] rounded px-3 py-2" required value={email} onChange={(e) => setEmail(e.target.value)} />
+      </div>
+
+      {/* رقم الجوال */}
+      <div className="mb-3">
+        <label className="block text-sm font-medium mb-1">رقم الجوال</label>
+        <input type="tel" className="w-full border border-[#7a77777e] rounded px-3 py-2" required value={phone} onChange={(e) => setPhone(e.target.value)} />
+      </div>
+
+      {/* الموقع */}
+      <div className="mb-3">
+        <label className="block text-sm font-medium mb-1">الموقع</label>
+        <input type="text" className="w-full border border-[#7a77777e] rounded px-3 py-2" placeholder="رابط الموقع " value={location} onChange={(e) => setLocation(e.target.value)} />
+      </div>
+
+      {/* كلمة المرور */}
+      <div className="mb-3">
+        <label className="block text-sm font-medium mb-1">كلمة المرور</label>
+        <input type="password" className="w-full border border-[#7a77777e] rounded px-3 py-2" required value={password} onChange={(e) => setPassword(e.target.value)} />
+      </div>
+
+      {/* الدور */}
+      <div className="mb-3">
+        <label className="block text-sm font-medium mb-1">الدور</label>
+        <select className="w-full border border-[#7a77777e] rounded px-3 py-2" value={role} onChange={(e) => setRole(e.target.value as "User" | "Helper")}>
+          <option value="User">مستخدم</option>
+          <option value="Helper">مساعد</option>
+        </select>
+      </div>
+
+      {/* الخدمات (إذا كان مساعد) */}
+      {role === "Helper" && (
+        <div className="mb-3">
+          <label className="block text-sm font-medium mb-1">الخدمات</label>
+          <select
+            multiple
+            className="w-full border border-[#7a77777e] rounded px-3 py-2"
+            value={services}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions).map((opt) => opt.value);
+              setServices(selected);
+            }}
+          >
+            <option value="سطحه">سطحة</option>
+            <option value="بطارية">بطارية</option>
+            <option value="وقود">وقود</option>
+            <option value="لتقديم المساعدة الشخصية">لتقديم المساعدة الشخصية</option>
+          
+          </select>
         </div>
+      )}
+
+      {/* الاسعار (إذا كان مساعد) */}
+      {role === "Helper" && (
+        <div className="mb-3">
+          <label className="block text-sm font-medium mb-1">السعر</label>
+          <select
+            multiple
+            className="w-full border border-[#7a77777e] rounded px-3 py-2"
+            value={services}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions).map((opt) => opt.value);
+              setServices(selected);
+            }}
+          >
+                    <option value="10-100">10-100 <SaudiRiyal /></option>
+                    <option value="200-300">200-500 <SaudiRiyal /></option>
+                     <option value="500>">اكثر من 500 <SaudiRiyal/></option>
+            
+           
+          
+          </select>
+        </div>
+      )}
+      {/* الأزرار */}
+      <div className="flex justify-between mt-6">
+        <button
+          type="button"
+          onClick={() => setModalOpen(false)}
+          className="px-4 py-1 rounded bg-gray-200 hover:bg-gray-300"
+        >
+          إغلاق
+        </button>
+
+        <button
+          type="submit"
+          className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+        >
+          حفظ
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            // هنا تضيف دالة الحذف
+            console.log("تم الحذف");
+            setModalOpen(false);
+          }}
+          className="flex items-center gap-2 px-4 py-1 bg-red-100 text-red-700 hover:bg-red-200 rounded"
+        >
+          <Trash2 size={18} />
+          حذف
+        </button>
+      </div>
+              </form>
+              </div>
+  </div>
+)}
+
+
+        
+          {selectedUser && (
+  <div className="fixed inset-0 bg-[#ffffff0b] bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+    <div className="bg-white p-6 rounded-xl w-[90%] max-w-md relative transform transition-all duration-300 scale-95 opacity-0 animate-fadeIn">
+      <h2 className="text-lg font-bold mb-4">تفاصيل المستخدم</h2>
+      <p><strong>رقم الجوال:</strong> i</p>
+
+      <p className="mt-2"><strong>تاريخ الخدمة:</strong> oo</p>
+
+      <div className="mt-4">
+        <strong>الموقع:</strong>
+        <iframe
+          src=''
+          width="100%"
+          height="200"
+          className="mt-2 rounded"
+          allowFullScreen
+        ></iframe>
+      </div>
+
+     
+
+      <div className="flex justify-between mt-6">
+        <button
+          onClick={closeModal}
+          className="px-4 py-1 rounded bg-gray-200 hover:bg-gray-300"
+        >
+          إغلاق
+                </button>
+                 <button
+          onClick={() => {
+            alert("تم الحذف");
+            closeModal();
+          }}
+          className="flex items-center gap-2 px-4 py-1 bg-green-100 text-green-700 hover:bg-green-200 rounded"
+        >
+          <Check  size={18} />
+          حفظ
+        </button>
+    
+      </div>
+    </div>
+  </div>
+)}
+
       </main>
     </div>
   );

@@ -16,7 +16,7 @@ import {
 } from "recharts";
 
 
-import {userGrowthData,highestRisksData,highestRiskCitiesData,riskAccuracyData} from "../../types/chart"
+import {highestRisksData,highestRiskCitiesData} from "../../types/chart"
 import AdminSidebar from "../../components/AdminSidebar";
 
 const dangers = [
@@ -63,8 +63,8 @@ const AdminDashboard = () => {
       <main className="flex-1 p-6 space-y-6">
         <div className="flex justify-between items-start flex-wrap gap-4">
           <div>
-            <h2 className="text-xl font-bold">Welcome Admin 👋</h2>
-            <p className="text-sm text-gray-500">لتكن على بصيرة</p>
+            <h2 className="text-xl font-bold">مرحبا Admin  👋</h2>
+            <p className="text-sm text-gray-500">بصّـار | لتكن على بصيرة </p>
           </div>
           <Button className="bg-yellow-400 text-black rounded-full flex gap-2 items-center">
            <Bell color="#ffffff" />
@@ -78,48 +78,48 @@ const AdminDashboard = () => {
               <p className="text-sm text-gray-500">Total Users</p>
               <h3 className="text-2xl font-bold">12,450</h3>
               <p className="text-xs text-green-500 flex items-center gap-1">
-                <ArrowUpRight size={14} /> 12% vs last month
+                <ArrowUpRight size={14} /> 12% last month
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-gray-500">Total danger zones</p>
+              <p className="text-sm text-gray-500">مجموع المناطق الخطرة  </p>
               <h3 className="text-2xl font-bold">3,210</h3>
-              <p className="text-xs text-red-500">-2% vs last month</p>
+              <p className="text-xs text-red-500">-2%  last month</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-gray-500">Active helpers</p>
+              <p className="text-sm text-gray-500">المساعدين النشطيين </p>
               <h3 className="text-2xl font-bold">520</h3>
-              <p className="text-xs text-green-500">+2% vs last month</p>
+              <p className="text-xs text-green-500">+2%  last month</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Trips section */}
         <div>
-          <h4 className="text-lg font-semibold mb-4">Trips</h4>
+          <h4 className="text-lg font-semibold mb-4">المناطق الخطرة</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {dangers.map((danger) => (
            
 
               <div className="rounded-xl overflow-hidden border border-yellow-200 shadow-md">
-  <div className="relative">
-    <img src={danger.image} alt="dangers-zone" className="w-90 h-42 object-cover" />
-    <span className="absolute top-2 right-2 bg-yellow-400 text-black text-sm font-bold px-2 py-1 rounded-full">
-      New
-    </span>
-  </div>
-  <div className="p-4 text-right">
-    <h3 className="text-sm font-bold"> {danger.position}</h3>
-    <p className="text-sm text-gray-500">{danger.city}</p>
-    <span className="inline-block mt-2 px-3 py-1 bg-gray-100 rounded text-xs">
-      { danger.tag}
-    </span>
-  </div>
-</div>
+                <div className="relative">
+                  <img src={danger.image} alt="dangers-zone" className="w-100 h-42 object-cover" />
+                  {/*<span className="absolute top-2 right-2 bg-yellow-400 text-black text-sm font-bold px-2 py-1 rounded-full">
+                    New
+                  </span>*/}
+                </div>
+                <div className="p-4 text-right border border-yellow-200">
+                  <h3 className="text-sm font-bold"> {danger.position}</h3>
+                  <p className="text-sm text-gray-500">{danger.city}</p>
+                  <span className="inline-block mt-2 px-3 py-1 bg-gray-100 rounded text-xs">
+                    { danger.tag}
+                  </span>
+                </div>
+            </div>
 
             ))}
           </div>
@@ -127,76 +127,47 @@ const AdminDashboard = () => {
 
         {/* Charts section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card >
-            <CardContent className="p-4">
-              <h4 className="font-semibold">User Growth</h4>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={userGrowthData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="users" stroke="#3b82f6" strokeWidth={2} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+      
+     
 
-          <Card>
-            <CardContent className="p-4">
-              <h4 className="font-semibold">Highest risks</h4>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={highestRisksData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="value" fill="#f97316" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+<Card>
+  <CardContent className="p-4">
+    <h4 className="font-semibold">الأعلى خطورة </h4>
+    <div className="h-64">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={highestRisksData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" reversed />
+          <YAxis orientation="right"  tickFormatter={(value) => value.toLocaleString("en-EG")} />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#f97316" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  </CardContent>
+</Card>
 
-          <Card>
-            <CardContent className="p-4">
-              <h4 className="font-semibold">Highest-risk cities</h4>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={highestRiskCitiesData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="value" fill="#e11d48" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+<Card>
+  <CardContent className="p-4">
+    <h4 className="font-semibold">المدن الأعلى في مستوى الخطورة  </h4>
+    <div className="h-64">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={highestRiskCitiesData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" reversed />
+          <YAxis orientation="right"/>
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#e11d48" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  </CardContent>
+</Card>
 
-          <Card>
-            <CardContent className="p-4">
-              <h4 className="font-semibold">Risk accuracy</h4>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={riskAccuracyData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+
+
         </div>
       </main>
     </div>

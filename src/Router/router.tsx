@@ -26,7 +26,7 @@ import ServiceList from "../components/ServiceList";
 function Layout() {
   return (
     <>
-    <div className="min-h-screen flex flex-col"> 		
+    <div className=""> 		
  
 		<main className="flex-grow">
 			<Outlet />

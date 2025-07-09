@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "./ui/Button";
-import {  LogOut } from "lucide-react";
+import {  LogOut,Menu } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
 
@@ -15,12 +15,12 @@ export default function AdminSidebar() {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className=" bg-gray-50 flex">
         {menuOpen && (
           <div
             className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
             onClick={handleOverlayClick}
-          ></div>
+          ><Menu/></div>
         )}
         {/* Sidebar */}
         <aside className="w-64 bg-white p-6 border-r border-[#d8d0d090] hidden md:block">
@@ -73,8 +73,8 @@ export default function AdminSidebar() {
                 A
               </div>
               <div>
-                <p className="font-semibold">Helper</p>
-                <p className="text-xs text-gray-400">helper@helper.com</p>
+                <p className="font-semibold">admin</p>
+                <p className="text-xs text-gray-400">admin@admin.com</p>
               </div>
               <LogOut className="mr-auto text-red-500 cursor-pointer" />
             </div>
