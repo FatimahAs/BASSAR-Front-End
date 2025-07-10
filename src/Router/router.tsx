@@ -21,6 +21,7 @@ import UserDanger from "../pages/user/UserDanger";
 import Map from "../components/Map";
 import ServiceList from "../components/ServiceList";
 import SignUpHelper from "../pages/SignupHelper";
+import HelpReq from "../pages/helper/HelpReq";
 
 
 function Layout() {
@@ -49,8 +50,8 @@ const router = createBrowserRouter([
 
       { path: "helper", element: <HelperDashboard /> },
       { path: "helphistory", element: <HelperHistory /> },
-      { path: "helplist", element: <Helper /> },
-
+      
+ { path: "helpreq", element: <HelpReq /> },
       { path: "user", element: <UserDashboard /> },
          { path: "userhistory", element: <UserHistory /> },
       { path: "userlist", element: <UserList /> },
@@ -59,6 +60,7 @@ const router = createBrowserRouter([
 
 
       { path: "/service-list/:serviceType", element: <ServiceList /> },
+    
 
 	
 	  { path: "signin", element: <Signin /> },

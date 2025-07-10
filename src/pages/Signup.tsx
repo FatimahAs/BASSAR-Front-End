@@ -1,49 +1,61 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router";
-
+import axios from 'axios';
+import Swal from 'sweetalert2';
 export default function SignUpPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+   const navigator = useNavigate();
+   
+   const [showPassword, setShowPassword] = useState(false);
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    phone:'',
+   
+  });
 
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (password !== confirmPassword) {
-      alert("كلمة المرور غير متطابقة");
-      return;
+  const validateForm = () => {
+    if (!form.name || !form.email || !form.password || !form.phone  ) {
+      Swal.fire('خطأ', 'جميع الحقول مطلوبة', 'error');
+      return false;
     }
+
+    if (!/\S+@\S+\.\S+/.test(form.email)) {
+      Swal.fire('خطأ', 'الإيميل غير صالح', 'error');
+      return false;
+    }
+
+    if (form.password.length < 6) {
+      Swal.fire('خطأ', 'كلمة المرور يجب أن تكون على الأقل 6 أحرف', 'error');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, phone, email, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.token) {
-        alert("تم التسجيل بنجاح!");
-        localStorage.setItem("token", data.token);
-        navigate("/map");
-      } else {
-        alert(data.message || "حدث خطأ أثناء التسجيل");
+      const { data } = await axios.post('http://localhost:3000/api/users/register-user', form);
+      // تخزين التوكن في localStorage إذا أرسلته من السيرفر
+      if (data.token) {
+        localStorage.setItem('token', data.token);
       }
+
+      Swal.fire('تم', 'تم التسجيل بنجاح', 'success');
+      navigator('/user')
     } catch (err) {
-      console.error(err);
-      alert("فشل الاتصال بالخادم");
+      Swal.fire('خطأ', err.response?.data?.message || 'فشل في التسجيل', 'error');
     }
   };
+
+
+
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-90 via-yellow-100 to-white-200 px-4">
@@ -67,8 +79,7 @@ export default function SignUpPage() {
             <input
               type="text"
               className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+                onChange={e => setForm({ ...form, name: e.target.value })} 
               required
             />
           </div>
@@ -81,8 +92,7 @@ export default function SignUpPage() {
               type="tel"
               placeholder="+966"
               className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+                 onChange={e => setForm({ ...form, phone: e.target.value })} 
               required
             />
           </div>
@@ -94,8 +104,7 @@ export default function SignUpPage() {
             <input
               type="email"
               className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+                 onChange={e => setForm({ ...form, email: e.target.value })} 
               required
             />
           </div>
@@ -107,8 +116,7 @@ export default function SignUpPage() {
             <input
               type={showPassword ? "text" : "password"}
               className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setForm({ ...form, password: e.target.value })} 
               required
             />
             <button
@@ -124,29 +132,6 @@ export default function SignUpPage() {
             </button>
           </div>
 
-          <div className="relative">
-            <label className="block text-sm font-medium text-[#272343] mb-1">
-              تأكيد كلمة السر
-            </label>
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute left-3 top-9 text-[#272343] hover:text-gray-700"
-            >
-              {showConfirmPassword ? (
-                <EyeIcon className="w-5 h-5 cursor-pointer" />
-              ) : (
-                <EyeSlashIcon className="w-5 h-5 cursor-pointer" />
-              )}
-            </button>
-          </div>
 
           <button
             type="submit"
@@ -163,7 +148,7 @@ export default function SignUpPage() {
           </div>
           <div className="flex justify-center items-center">
             <p className="p-1 text-[#272343]">   سجل كمساعد او مقدم خدمة    </p>
-            <Link className="underline text-[#272343]" to="/signuphelper">
+            <Link className="underline text-[#272343]" to="/signupاث">
              تسجيل
             </Link>
           </div>

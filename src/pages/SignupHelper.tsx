@@ -45,7 +45,7 @@ export default function SignUpHelper() {
     if (!validateForm()) return;
 
     try {
-      const { data } = await axios.post('http://localhost:3000/api/users/register-helper', form);
+      const { data } = await axios.post('https://bassar-back-end.onrender.com/api/users/register-helper', form);
       // تخزين التوكن في localStorage إذا أرسلته من السيرفر
       if (data.token) {
         localStorage.setItem('token', data.token);

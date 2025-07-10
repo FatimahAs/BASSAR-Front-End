@@ -1,5 +1,5 @@
 import React from "react";
-import UserSidebar from "../../components/UserSidebar";
+import HelperSidebar from "../../components/HelperSidebar";
 import { Button } from "../../components/ui/Button";
 import { Trash, Plus, Bell } from "lucide-react"
 
@@ -39,10 +39,10 @@ const trips: Trip[] = [
 ]
 
 
-const UserList: React.FC = () => {
+const HelpReq: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-    <UserSidebar/>
+    <HelperSidebar/>
 
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-8">
@@ -102,4 +102,4 @@ const UserList: React.FC = () => {
   );
 };
 
-export default UserList;
+export default HelpReq;

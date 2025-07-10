@@ -46,16 +46,16 @@ export default function AdminSidebar() {
           لوحة التحكم
         </Button>
       </Link>
-      <Link to="/helplist">
+      <Link to="/helpreq">
         <Button
-          variant={currentPath === "/helplist" ? "default" : "ghost"}
+          variant={currentPath === "/helpreq" ? "default" : "ghost"}
           className={`w-full ${
-            currentPath === "/helplist"
+            currentPath === "/helpreq"
               ? "bg-yellow-400 text-black"
               : "justify-start"
           }`}
         >
-         المساعدات
+        طلبات المساعدة 
         </Button>
       </Link>
       <Link to="/helphistory">
