@@ -68,7 +68,7 @@ export default function UserHistory() {
         
           </div>
 
-          <Button className="bg-[#F8D203] text-black rounded-full flex gap-2 items-center">
+          <Button className="bg-[#F8D203] text-black rounded flex gap-2 items-center">
 
            <Bell color="#ffffff" />
           </Button>

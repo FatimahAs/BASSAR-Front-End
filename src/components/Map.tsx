@@ -5,9 +5,9 @@ import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-direct
 //import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { FaExclamationTriangle, FaHandsHelping } from "react-icons/fa";
 import { RiChatHistoryFill } from "react-icons/ri";
-
 import axios from "axios";
 import '../App.css'
+import { useNavigate } from "react-router";
 const camelWarningIcon = (
   <img src='../assets/den3.png' alt="تحذير جمال" style={{ width: 40, height: 40 }} />
 );
@@ -32,7 +32,7 @@ const TripNavigator: React.FC = () => {
   const directionsRef = useRef<InstanceType<typeof MapboxDirections> | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
 
-  // const navigate = useNavigate();
+   const navigate = useNavigate();
 
   const [showReportOptions, setShowReportOptions] = useState(false);
   const [showHelpOptions, setShowHelpOptions] = useState(false);
@@ -80,6 +80,39 @@ if (markerB) markerB.style.display = "none";
 
 
 //move the control UI to custom panel
+// Wait for instructions to appear and move them
+const moveInstructions = () => {
+  const fullWrapper = document.querySelector(".directions-control-directions");
+  const stepsContainer = document.getElementById("mapbox-directions-steps");
+
+  if (fullWrapper && stepsContainer && !stepsContainer.contains(fullWrapper)) {
+    stepsContainer.appendChild(fullWrapper);
+  }
+
+};
+
+const stepsObserver = new MutationObserver(() => {
+  moveInstructions();
+});
+
+stepsObserver.observe(document.body, {
+  childList: true,
+  subtree: true,
+});
+
+const stepsContainer = document.getElementById("mapbox-directions-steps");
+if (stepsContainer) stepsContainer.style.display = "none";
+
+directions.on("route", (e: any) => {
+  if (stepsContainer && e.route && e.route.length > 0) {
+    stepsContainer.style.display = "block";
+  }
+});
+
+directions.on("clear", () => {
+  if (stepsContainer) stepsContainer.style.display = "none";
+});
+
 const defaultPanel = document.querySelector(".mapboxgl-ctrl-top-left");
 const customPanel = document.getElementById("directions-panel");
 
@@ -87,11 +120,10 @@ if (defaultPanel && customPanel) {
   const directionsUI = defaultPanel.querySelector(".mapboxgl-ctrl-directions");
   if (directionsUI) {
     customPanel.appendChild(directionsUI);
-
-    
   }
 }
     directionsRef.current = directions;
+    
     const warningLocations: { coordinates: [number, number]; message: string; icon: any }[] = [
     { coordinates: [46.5, 24.7], message: "تحذير: عبور جمال", icon: camelWarningIcon },
     { coordinates: [46.48, 24.71], message: "تحذير: عبور جمال", icon: camelWarningIcon },
@@ -246,7 +278,7 @@ warningLocations.forEach((location) => {
   const routeCoords = routes[0].geometry.coordinates; // [lng, lat][]
 
   try {
-    const { data: dangerZones } = await axios.get("https://localhost:3000/api/danger-zones");
+    const { data: dangerZones } = await axios.get("https://bassar-back-end.onrender.com/api/danger-zones/danger-zones");
 
     const matchingZones = dangerZones.filter((zone: any) => {
       return routeCoords.some(([lng, lat]: [number, number]) => {
@@ -314,45 +346,25 @@ warningLocations.forEach((location) => {
     });
   };
 
-  //  const handleHelpRequest = (type: string) => {
-  //   navigate(`/service-list/${encodeURIComponent(type)}`);
-  // };
+    const handleHelpRequest = (type: string) => {
+     navigate(`/service-list/${encodeURIComponent(type)}`);
+   };
 
 
   //start trip with live location tracking
 const handleStartTrip = () => {
-  if (!navigator.geolocation || !mapRef.current) {
-    alert("Geolocation غير مدعومة");
-    return;
-  }
+    if (!navigator.geolocation || !mapRef.current) return;
 
-
-  if (watchIdRef.current !== null) {
-    navigator.geolocation.clearWatch(watchIdRef.current);
-  }
-
-  watchIdRef.current = navigator.geolocation.watchPosition(
-    (pos) => {
-      const coords: [number, number] = [pos.coords.longitude, pos.coords.latitude];
-
-      if (!userMarkerRef.current) {
-        userMarkerRef.current = new mapboxgl.Marker({ color: "#F8D203" })
-          .setLngLat(coords)
-          .addTo(mapRef.current!);
-      } else {
-        userMarkerRef.current.setLngLat(coords);
-      }
-
-      mapRef.current?.flyTo({
-        center: coords,
-        zoom: 16,
-        speed: 0.8,
-        essential: true,
-      });
-
-      directionsRef.current?.setOrigin(coords);
-
-      //check if user is near danger zones
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        const coords: [number, number] = [
+          pos.coords.longitude,
+          pos.coords.latitude,
+        ];
+        userMarkerRef.current?.setLngLat(coords);
+        directionsRef.current?.setOrigin(coords);
+        mapRef.current?.flyTo({ center: coords, zoom: 16 });
+     //check if user is near danger zones
       checkNearbyDangerZones(coords);
     },
     (error) => {
@@ -364,12 +376,11 @@ const handleStartTrip = () => {
       maximumAge: 0,
       timeout: 20000,
     }
-  );
-};
+  )}
 
 const checkNearbyDangerZones = async (coords: [number, number]) => {
   try {
-    const { data: dangerZones } = await axios.get("https://localhost:3000/api/danger-zones");
+    const { data: dangerZones } = await axios.get("https://bassar-back-end.onrender.com/api/danger-zones");
 
     const nearbyZones = dangerZones.filter((zone: any) => {
       const threshold = 0.01; 
@@ -401,133 +412,58 @@ function showNotification(message: string) {
   }, 5000); 
 }
 
- return(
+return(
   <React.Fragment>
-    <div className="layout-container">
-      <div id="notification-container" className="notification-container"></div>
-    <div ref={mapContainerRef} className="map-container"/>
-      <button className="panel-toggle" onClick={() => {
-        const panel = document.getElementById("directions-panel");
-        panel?.classList.toggle("collapsed");
-      }}>
-        ☰ القائمة
-      </button>
-    <div id="directions-panel" className="panel"
-    style={{ 
-      padding: '10px', maxHeight: '100%', overflowY: 'auto', 
-      color: '#000', fontFamily: 'Arial, sans-serif',width:'30%'}} >
-      <div className="buttonsDiv" 
-      style={{ display: 'flex',flexDirection:
-       'column', justifyContent: 'center', 
-       alignContent: 'center'}}>
-      <div   className="FunctionBtns"
-       style={{
-          position: "absolute",
-          bottom: 100,
-          zIndex: 10,
-          display: "flex",
-          gap: "5px",
-          justifyContent: 'center',
-          width: "90%",
-          flexShrink: "0"
-         }} >
-           {/* بلّغ */}
-  <button
-    style={{
-      border: "2px solid #e74c3c",
-      cursor: "pointer",
-      color: "#e74c3c",
-      padding: "12px",
-      borderRadius: "10px",
-      fontSize: "15px",
-      display: "flex",
-    flexDirection: "row" ,
-     gap: "5px"  ,
-     width: '25%',
-     justifyContent:"center",
-      alignItems: "center",
-      fontWeight: "bold"
- }}
-    onClick={() => setShowReportOptions(!showReportOptions)}
-    title="بلّغ"
-  >
-    بلّغ
-    <FaExclamationTriangle />
-  </button>
+    <div className="layout-container bg-black">
+  <div id="notification-container" className="absolute top-4 right-4 z-50 flex flex-col items-end gap-2" />
+  <div className="relative h-screen w-screen overflow-hidden">
+  <div ref={mapContainerRef} className="absolute map-container  inset-0 z-0" />
+  <div id="mapbox-directions-steps" className="absolute top-4 left-4 z-10 max-h-[300px] w-[350px] overflow-y-auto bg-white bg-opacity-90 p-4 rounded-lg shadow" />
 
-  {/* اطلب مساعدة */}
+<div
+  id="directions-panel"
+  className="absolute top-4 right-4 z-10 bg-white bg-opacity-90
+   p-4  rounded-lg shadow-md max-w-xs w-[320px] 
+   flex flex-col-reverse gap-5 justify-center items-center"
+>
+  {/* Start Trip Button under the input UI */}
   <button
-    style={{
-      color: "#27ae60",
-      border: "2px solid #27ae60",
-      cursor: "pointer",
-      padding: "12px",
-      borderRadius: "10px",
-      fontSize: "15px",
-      display: "flex",
-     flexDirection: "row" ,
-      gap: "5px" ,
-      width: '35%' ,
-      justifyContent:"center",
-      alignItems: "center",
-      fontWeight: "bold"
-    }}
-    onClick={() => setShowHelpOptions(!showHelpOptions)}
-    title="اطلب مساعدة"
+    className=" top-40 right-1 z-10 w-full bg-yellow-400 text-white font-bold px-6 py-2 rounded-md shadow-md hover:bg-yellow-500"
+    onClick={handleStartTrip}
   >
-    اطلب مساعدة
-    <FaHandsHelping />
+    ابدأ الرحلة
   </button>
+  </div>
 
-  {/* السجل */}
-  <button
-    style={{
-      color: "#8e44ad",
-      border: "2px solid #8e44ad",
-      cursor: "pointer",
-      padding: "12px",
-      borderRadius: "10px",
-      fontSize: "15px",
-      display: "flex",
-      flexDirection: "row" ,
-      gap: "5px",
-      width: "25%",
-      height: "50px",
-      justifyContent:"center",
-      alignItems: "center",
-      fontWeight: "bold"
-    }}
-    onClick={() => setShowLog(!showLog)}
-    title="السجل"
-  >
-    السجل
-<RiChatHistoryFill />
-  </button>
- </div>
-  <button
-      style={{
-        position: "absolute",
-        bottom: 20,
-        right: 20,
-        zIndex: 1,
-        padding: "10px 20px",
-        fontWeight: "bold",
-        borderRadius: "8px",
-        backgroundColor: "#F8D203",
-        color: "#fff",
-        border: "none",
-        cursor: "pointer",
-        fontSize: '20px',
-        width: "320px"
-      }}
-      className="startBtn"
-      onClick={handleStartTrip}
+  {/* Bottom Navigation */}
+  <div className="absolute bottom-0 w-full z-10 bg-[#f3f8fe] 
+  bg-opacity-90 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 flex flex-row
+  items-center justify-center gap-3 sh">
+    <button
+      className="flex items-center gap-2 border border-red-600 text-red-600 px-4 py-2 rounded font-semibold hover:bg-red-100"
+      onClick={() => setShowReportOptions(true)}
     >
-      أبدأ الرحلة
+      بلّغ 
+      <FaExclamationTriangle className="hidden lg:block"/>
     </button>
-    </div>
-    </div>
-             {/* خيارات المساعدة */}
+    <button
+      className="flex items-center gap-2 border border-green-600 text-green-600 px-4 py-2 rounded font-semibold hover:bg-green-100"
+      onClick={() => setShowHelpOptions(true)}
+    >
+      اطلب مساعدة 
+     <FaHandsHelping className="hidden lg:block"/>
+    </button>
+    <button
+      className="flex items-center gap-2 border border-purple-600 text-purple-600 px-4 py-2 rounded font-semibold hover:bg-purple-100"
+      onClick={() => setShowLog(true)}
+    >
+      السجل 
+      <RiChatHistoryFill className="hidden lg:block"/>
+    </button>
+  </div>
+</div>
+ 
+{/* خيارات المساعدة */}
 {showHelpOptions && (
   <div
    className="modal-overlay"
@@ -548,7 +484,7 @@ function showNotification(message: string) {
       {["سطحة", "مساعد شخصي", "بطارية", "بنشر", "وقود"].map((type) => (
         <button
           key={type}
-          //onClick={() => handleHelpRequest(type)}
+          onClick={() => handleHelpRequest(type)}
           style={{
             display: "block",
             width: "100%",
@@ -569,7 +505,7 @@ function showNotification(message: string) {
   </div>
 )}
 
-      {/* خيارات البلاغ */}
+{/* خيارات البلاغ */}
 {showReportOptions && (
   <div
    className="modal-overlay"

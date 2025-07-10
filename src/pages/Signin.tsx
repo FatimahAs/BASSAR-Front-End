@@ -5,42 +5,54 @@ import Swal from 'sweetalert2';
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [phoneNumber, setphoneNumber] = useState("");
+  const [phone, setphone] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+ const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    try {
-      const res = await fetch("https://bassar-back-end.onrender.com/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phoneNumber: phoneNumber,
-          password: password,
-        }),
-      });
+  try {
+    const res = await fetch("https://bassar-back-end.onrender.com/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phone: phone,
+        password: password,
+      }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (res.ok && data.token) {
-          Swal.fire('تم', 'تم التسجيل بنجاح', 'success');
-        // خزّن التوكن
-        localStorage.setItem("token", data.token);
-        navigate("/map");
+    if (res.ok && data.token) {
+      Swal.fire('تم', 'تم التسجيل بنجاح', 'success');
+
+      // خزّن التوكن
+      localStorage.setItem("token", data.token);
+
+      // ✅ التوجيه حسب الدور
+      const role = data.user?.role;
+
+      if (role === "user") {
+        navigate("/user");
+      } else if (role === "helper") {
+        navigate("/helpre"); // أو "/helper" إذا كانت هذي الصحيحة
+      } else if (role === "admin") {
+        navigate("/admin");
       } else {
-    
-         Swal.fire('خطأ', data.message || "رقم الجوال أو كلمة السر غير صحيحة", 'error');
+        navigate("/map"); // fallback في حال ما فيه role معروف
       }
-    } catch (err) {
-      console.error(err);
-       Swal.fire('خطأ',  "حدث خطأ أثناء تسجيل الدخول", 'error');
-      
+    } else {
+      Swal.fire('خطأ', data.message || "رقم الجوال أو كلمة السر غير صحيحة", 'error');
     }
-  };
+  } catch (err) {
+    console.error(err);
+    Swal.fire('خطأ', "حدث خطأ أثناء تسجيل الدخول", 'error');
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-90 via-yellow-100 to-white-200 px-4">
@@ -67,8 +79,8 @@ export default function SignUpPage() {
             <input
               type="tel"
               placeholder="+966"
-              value={phoneNumber}
-              onChange={(e) => setphoneNumber(e.target.value)}
+              value={phone}
+              onChange={(e) => setphone(e.target.value)}
               className="w-full px-4 py-2 border border-[#F8D203] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F8D203] bg-white/80 placeholder-gray-500"
               required
             />

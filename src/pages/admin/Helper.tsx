@@ -84,7 +84,7 @@ export default function Helper() {
             <h2 className="text-xl font-bold">مرحبا Admin 👋</h2>
         
           </div>
-          <Button className="bg-yellow-400 text-black rounded-full flex gap-2 items-center">
+          <Button className="bg-yellow-400 text-black rounded flex gap-2 items-center">
            <Bell color="#ffffff" />
           </Button>
         </div>

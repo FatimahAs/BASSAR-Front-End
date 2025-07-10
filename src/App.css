@@ -22,6 +22,14 @@ body {
     }
 }
 
+html,
+body,
+#root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 .FunctionBtns button {
     margin: 0;
     padding: 0;
@@ -126,7 +134,7 @@ body {
 
 .mapbox-directions-step {
     position: relative;
-    color: rgb(255, 252, 252) !important;
+    color: rgb(255, 255, 255) !important;
     cursor: pointer;
     padding: 20px 20px 20px 40px;
     font-size: 14px;
@@ -150,17 +158,35 @@ body {
 }
 
 #directions-panel {
-    /*width: 23%;
-    max-width: 24rem;*/
-    max-height: 100%;
-    /*overflow-y: auto;*/
-    background-color: #f3f8fe !important;
-    backdrop-filter: blur(40px) !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #f3f8fec0;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     z-index: 10;
-    position: relative;
-    display: flex;
-    flex-direction: column;
+    max-width: 400px;
+}
+
+#mapbox-directions-steps {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+    width: auto;
+    max-width: 350px;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+    pointer-events: none;
+}
+
+#mapbox-directions-steps .directions-control-directions {
+    pointer-events: auto;
 }
 
 .startBtn {
@@ -204,7 +230,6 @@ body {
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.5);
-    /* semi-transparent black */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -241,40 +266,6 @@ body {
     color: #000;
 }
 
-.layout-container {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-}
-
-.map-container {
-    flex: 1;
-}
-
-.panel {
-    width: 400px;
-    background: white;
-    border-left: 1px solid #ccc;
-    transition: transform 0.3s ease;
-    overflow-y: auto;
-    z-index: 5;
-}
-
-.panel-toggle {
-    display: none;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 20;
-    padding: 8px 12px;
-    font-size: 16px;
-    background: #F8D203;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-}
-
 .notification-container {
     position: absolute;
     top: 20px;
@@ -307,37 +298,91 @@ body {
     }
 }
 
+.layout-container {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+}
 
-/* Tablets and phones */
+.map-container {
+    flex: 1;
+    height: 100%;
+}
+
+.custom-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #f3f8fe !important;
+    backdrop-filter: blur(40px) !important;
+    box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    transition: right 0.3s ease-in-out;
+    z-index: 3;
+}
+
+.custom-panel.hidden {
+    right: -100%;
+}
+
+.custom-panel.visible {
+    right: 0;
+}
+
+.panel-toggle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #f8d203;
+    color: #fff;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    padding: 8px 6px;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 4;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+#directions-panel .directions-control-instructions {
+    display: none !important;
+}
+
+
+/* -------- Mobile/Tablet Only -------- */
 
 @media (max-width: 1024px) {
     .layout-container {
+        position: relative;
         flex-direction: column;
     }
-    .map-container {
-        height: calc(100vh - 50px);
-        /* Leave space for toggle */
-    }
-    .panel {
+    #directions-panel.panel {
         position: absolute;
-        bottom: 0;
-        left: 0;
+        top: 0;
+        right: 0;
+        transform: translateX(100%);
+        max-width: 320px;
         width: 100%;
-        height: 60%;
-        transform: translateY(0);
-        border-left: none;
-        border-top: 2px solid #ccc;
+        height: 100%;
+        z-index: 3;
     }
-    .panel.collapsed {
-        transform: translateY(100%);
+    #directions-panel.panel.active {
+        transform: translateX(0%);
     }
     .panel-toggle {
         display: block;
     }
 }
 
+
+/* -------- Desktop (Hide Toggle Button) -------- */
+
 @media (min-width: 1025px) {
-    .toggle-panel-button {
+    .panel-toggle {
         display: none;
     }
 }

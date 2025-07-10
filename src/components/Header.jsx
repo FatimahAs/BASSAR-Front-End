@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from 'react-router'
 
 function Header() {
   return (
@@ -9,9 +10,11 @@ function Header() {
         <p className="text-lg max-w-xl text-yellow-100">
           سافر واطمّن – بصار يكشف لك المخاطر أول بأول باستخدام تحديثات مباشرة.
         </p>
-        <button className="mt-6 px-6 py-3 text-lg font-semibold bg-[#F8D203] text-[#272343] rounded hover:opacity-90 transition cursor-pointer">
+        <Link to="map">
+           <button className="mt-6 px-6 py-3 text-lg font-semibold bg-[#F8D203] text-[#272343] rounded hover:opacity-90 transition cursor-pointer">
           ابدأ الآن
         </button>
+       </Link>
       </section>
     </div>
   );

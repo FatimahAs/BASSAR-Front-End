@@ -39,7 +39,7 @@ export default function SignUpPage() {
     if (!validateForm()) return;
 
     try {
-      const { data } = await axios.post('http://localhost:3000/api/users/register-user', form);
+      const { data } = await axios.post('https://bassar-back-end.onrender.com/api/users/register-user', form);
       // تخزين التوكن في localStorage إذا أرسلته من السيرفر
       if (data.token) {
         localStorage.setItem('token', data.token);
@@ -148,7 +148,7 @@ export default function SignUpPage() {
           </div>
           <div className="flex justify-center items-center">
             <p className="p-1 text-[#272343]">   سجل كمساعد او مقدم خدمة    </p>
-            <Link className="underline text-[#272343]" to="/signupاث">
+            <Link className="underline text-[#272343]" to="/signuphelper">
              تسجيل
             </Link>
           </div>

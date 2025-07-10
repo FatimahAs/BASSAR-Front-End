@@ -23,7 +23,7 @@ export default function AdminSidebar() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/logout", {
+      const res = await fetch("https://bassar-back-end.onrender.com/api/users/logout", {
         method: "POST",
         headers: {
           token: `${token}`,

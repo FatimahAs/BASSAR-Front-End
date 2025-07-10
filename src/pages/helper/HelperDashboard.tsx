@@ -53,7 +53,7 @@ const HelperDashboard = () => {
             <h2 className="text-xl font-bold">Welcome Helper 👋</h2>
             <p className="text-sm text-gray-500">لتكن على بصيرة</p>
           </div>
-          <Button className="bg-yellow-400 text-black rounded-full flex gap-2 items-center">
+          <Button className="bg-yellow-400 text-black rounded flex gap-2 items-center">
            <Bell color="#ffffff" />
           </Button>
         </div>

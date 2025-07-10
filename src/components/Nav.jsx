@@ -63,7 +63,7 @@ function Nav() {
         {/* الزر */}
         <Link to="/signup">
           <button className="hidden md:block bg-yellow-400 text-[#272343] font-semibold py-2 px-4 rounded-lg hover:bg-yellow-300 transition duration-300 cursor-pointer">
-            ابدأ الآن
+            تسجيل الآن
           </button>
         </Link>
       </div>
