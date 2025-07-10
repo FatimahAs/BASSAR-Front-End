@@ -106,7 +106,7 @@ const UserDanger: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/danger-zones',
+        'https://bassar-back-end.onrender.com/api/danger-zones',
         {
           name: form.name,
           type: form.type,
