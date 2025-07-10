@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router";
+import Swal from 'sweetalert2';
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,7 +13,7 @@ export default function SignUpPage() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/login", {
+      const res = await fetch("https://bassar-back-end.onrender.com/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,16 +27,18 @@ export default function SignUpPage() {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        alert("تم تسجيل الدخول بنجاح");
+          Swal.fire('تم', 'تم التسجيل بنجاح', 'success');
         // خزّن التوكن
         localStorage.setItem("token", data.token);
         navigate("/map");
       } else {
-        alert(data.message || "رقم الجوال أو كلمة السر غير صحيحة");
+    
+         Swal.fire('خطأ', data.message || "رقم الجوال أو كلمة السر غير صحيحة", 'error');
       }
     } catch (err) {
       console.error(err);
-      alert("حدث خطأ أثناء تسجيل الدخول");
+       Swal.fire('خطأ',  "حدث خطأ أثناء تسجيل الدخول", 'error');
+      
     }
   };
 
