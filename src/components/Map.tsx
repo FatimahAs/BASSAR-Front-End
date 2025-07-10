@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl, { Map } from "mapbox-gl";
-import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
-import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
-import { FaExclamationTriangle, FaHandsHelping } from "react-icons/fa";
+import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";import { FaExclamationTriangle, FaHandsHelping } from "react-icons/fa";
 import { RiChatHistoryFill } from "react-icons/ri";
 import camelWarningIcon from '../assets/den3.png';
 import rockfallIcon from '../assets/den2.png';
 import dangerIcon from '../assets/den1.png';
 import '../App.css';
 import axios from "axios";
-
+//fix live tracking and responsive 
+//add backend endpoint and test map
 export const Access_Token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
    mapboxgl.accessToken = Access_Token
   mapboxgl.setRTLTextPlugin(
@@ -28,7 +27,6 @@ const TripNavigator: React.FC = () => {
   const watchIdRef = useRef<number | null>(null);
   const directionsRef = useRef<InstanceType<typeof MapboxDirections> | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
-
   // const navigate = useNavigate();
 
   const [showReportOptions, setShowReportOptions] = useState(false);
@@ -65,29 +63,8 @@ if (mapRef.current && !mapRef.current.hasControl(directions)) {
   mapRef.current.addControl(directions, "top-left");
   
 }
-const DerctionIcons = document.getElementsByClassName('.directions-icon ')[0] as HTMLElement
-if(DerctionIcons) DerctionIcons.style.fill = "#272343 "; 
-
-const markerA = document.getElementsByClassName("marker-a")[0] as HTMLDivElement;
-const markerB = document.getElementsByClassName("marker-b")[0] as HTMLDivElement;
-console.log("marker a :", markerB);
-
-if (markerA) markerA.style.display = "none";
-if (markerB) markerB.style.display = "none";
 
 
-//move the control UI to custom panel
-const defaultPanel = document.querySelector(".mapboxgl-ctrl-top-left");
-const customPanel = document.getElementById("directions-panel");
-
-if (defaultPanel && customPanel) {
-  const directionsUI = defaultPanel.querySelector(".mapboxgl-ctrl-directions");
-  if (directionsUI) {
-    customPanel.appendChild(directionsUI);
-
-    
-  }
-}
     directionsRef.current = directions;
     //observer to detect when inputs exist and set placeholders
     observerRef.current = new MutationObserver(() => {
@@ -121,20 +98,83 @@ if (defaultPanel && customPanel) {
       childList: true,
       subtree: true,
     });
-    // RTL text fixes on style load
-    mapRef.current.on("style.load", () => {
-      const layers = mapRef.current?.getStyle().layers;
-      if (!layers) return;
+    // Wait for instructions to appear and move them
+const moveInstructions = () => {
+  const fullWrapper = document.querySelector(".directions-control-directions");
+  const stepsContainer = document.getElementById("mapbox-directions-steps");
 
-      layers.forEach((layer) => {
-        if (layer.type === "symbol" && layer.layout && "text-field" in layer.layout) {
-          mapRef.current?.setLayoutProperty(layer.id, "text-writing-mode", ["horizontal", "vertical"]);
-          mapRef.current?.setLayoutProperty(layer.id, "text-justify", "right");
-          // @ts-ignore
-          mapRef.current?.setLayoutProperty(layer.id, "text-direction", "rtl");
+  if (fullWrapper && stepsContainer && !stepsContainer.contains(fullWrapper)) {
+    stepsContainer.appendChild(fullWrapper);
+  }
+
+};
+
+const stepsObserver = new MutationObserver(() => {
+  moveInstructions();
+});
+
+stepsObserver.observe(document.body, {
+  childList: true,
+  subtree: true,
+});
+
+const stepsContainer = document.getElementById("mapbox-directions-steps");
+if (stepsContainer) stepsContainer.style.display = "none";
+
+directions.on("route", (e: any) => {
+  if (stepsContainer && e.route && e.route.length > 0) {
+    stepsContainer.style.display = "block";
+  }
+});
+
+directions.on("clear", () => {
+  if (stepsContainer) stepsContainer.style.display = "none";
+});
+
+const defaultPanel = document.querySelector(".mapboxgl-ctrl-top-left");
+const customPanel = document.getElementById("directions-panel");
+
+if (defaultPanel && customPanel) {
+  const directionsUI = defaultPanel.querySelector(".mapboxgl-ctrl-directions");
+  if (directionsUI) {
+    customPanel.appendChild(directionsUI);
+  }
+}
+
+
+    // RTL text fixes on style load
+mapRef.current.on("load", () => {
+  const layers = mapRef.current?.getStyle().layers;
+  if (!layers) return;
+
+  layers.forEach((layer) => {
+    if (
+      layer.type === "symbol" &&
+      layer.layout &&
+      typeof layer.layout["text-field"] !== "undefined"
+    ) {
+      try {
+        if (mapRef.current?.getLayoutProperty(layer.id, "text-writing-mode") !== undefined) {
+          mapRef.current.setLayoutProperty(layer.id, "text-writing-mode", ["horizontal", "vertical"]);
         }
-      });
-    });
+
+        if (mapRef.current?.getLayoutProperty(layer.id, "text-justify") !== undefined) {
+          mapRef.current.setLayoutProperty(layer.id, "text-justify", "right");
+        }
+
+        // @ts-ignore
+        if (mapRef.current?.getLayoutProperty(layer.id, "text-direction") !== undefined) {
+          // @ts-ignore
+          mapRef.current.setLayoutProperty(layer.id, "text-direction", "rtl");
+        }
+      } catch (err) {
+        console.warn(`❗ Failed to update layout for layer: ${layer.id}`, err);
+      }
+    }
+  });
+});
+
+
     //initial user location 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -174,6 +214,7 @@ if (defaultPanel && customPanel) {
   };
 
   },[])
+
       //add warnings on map function 
  const DisplayWarningsOnRoute = async () => {
   if (!mapRef.current || !directionsRef.current) return;
@@ -187,7 +228,7 @@ if (defaultPanel && customPanel) {
   const routeCoords = routes[0].geometry.coordinates; // [lng, lat][]
 
   try {
-    const { data: dangerZones } = await axios.get("https://localhost:3000/api/danger-zones");
+    const { data: dangerZones } = await axios.get("https://bassar-back-end.onrender.com/api/danger-zones/danger-zones");
 
     const matchingZones = dangerZones.filter((zone: any) => {
       return routeCoords.some(([lng, lat]: [number, number]) => {
@@ -214,86 +255,119 @@ if (defaultPanel && customPanel) {
     });
 
     if (matchingZones.length === 0) {
-      alert("لا توجد تحذيرات على المسار المختار.");
+      showNotification("لا توجد تحذيرات على المسار المختار.");
     }
   } catch (err) {
     console.error("Error fetching danger zones:", err);
-    alert("فشل تحميل بيانات التحذيرات.");
+    showNotification("فشل تحميل بيانات التحذيرات.");
   }
 };
-           const getDangerIcon = (name: string): string => {
+  const getDangerIcon = (name: string): string => {
           if (name.includes("جمال")) return camelWarningIcon;
           if (name.includes("انزلاق") || name.includes("صخور")) return rockfallIcon;
           return dangerIcon;
         };
 
-        const handleReportType = (type: string) => {
-    if (!navigator.geolocation || !mapRef.current) return;
+const handleReportType = async (type: string) => {
+  if (!navigator.geolocation || !mapRef.current) return;
 
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const coords: [number, number] = [
-        pos.coords.longitude,
-        pos.coords.latitude,
-      ];
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const coords: [number, number] = [
+      pos.coords.longitude,
+      pos.coords.latitude,
+    ];
 
-      new mapboxgl.Marker({ color: "red" })
-        .setLngLat(coords)
-        .setPopup(new mapboxgl.Popup().setText(`بلاغ: ${type}`))
-        .addTo(mapRef.current!);
+  
+    const icon = getDangerIcon(type);
 
-      setActivityLog((prev) => [
-        ...prev,
-        {
-          type: "بلاغ",
-          content: type,
-          coords,
-          timestamp: new Date().toLocaleString(),
+  
+    let description = "تحذير عام";
+    if (type.includes("جمال")) description = "تحذير من الجمال";
+    else if (type.includes("منحدر") || type.includes("صخور")) description = "منحدر أو خطر صخور";
+
+
+    let cityName = "غير معروف";
+    try {
+      const geocodeRes = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${coords[0]},${coords[1]}.json?access_token=${Access_Token}&language=ar`
+      );
+
+      const features = geocodeRes.data.features;
+      const place = features.find((f: any) =>
+        f.place_type.includes("place")
+      );
+      if (place) cityName = place.text;
+    } catch (err) {
+      console.error("Reverse geocoding failed", err);
+    }
+
+ 
+    try {
+      const res = await axios.post("https://bassar-back-end.onrender.com/api/danger-zones/danger-zones/report", {
+        name: type,
+        description,
+        location: {
+          lat: coords[1],
+          lng: coords[0],
         },
-      ]);
+        city: cityName,
+      });
 
-      setShowReportOptions(false);
-    });
-  };
+      if (res.status === 200 || res.status === 201) {
+        const el = document.createElement("div");
+        el.style.backgroundImage = `url(${icon})`;
+        el.style.width = "32px";
+        el.style.height = "32px";
+        el.style.backgroundSize = "contain";
+        el.style.backgroundRepeat = "no-repeat";
+
+        new mapboxgl.Marker(el)
+          .setLngLat(coords)
+          .setPopup(new mapboxgl.Popup().setText(`بلاغ: ${type}`))
+          .addTo(mapRef.current!);
+
+        setActivityLog((prev) => [
+          ...prev,
+          {
+            type: "بلاغ",
+            content: type,
+            coords,
+            timestamp: new Date().toLocaleString(),
+          },
+        ]);
+      } else {
+        showNotification("فشل إرسال البلاغ إلى الخادم");
+      }
+    } catch (error) {
+      console.error("Error reporting danger zone:", error);
+      showNotification("حدث خطأ أثناء إرسال البلاغ.");
+    }
+
+    setShowReportOptions(false);
+  });
+};
+
+
 
   //  const handleHelpRequest = (type: string) => {
   //   navigate(`/service-list/${encodeURIComponent(type)}`);
   // };
 
+  
 
-  //start trip with live location tracking
-const handleStartTrip = () => {
-  if (!navigator.geolocation || !mapRef.current) {
-    alert("Geolocation غير مدعومة");
-    return;
-  }
+ const handleStartTrip = () => {
+    if (!navigator.geolocation || !mapRef.current) return;
 
-
-  if (watchIdRef.current !== null) {
-    navigator.geolocation.clearWatch(watchIdRef.current);
-  }
-
-  watchIdRef.current = navigator.geolocation.watchPosition(
-    (pos) => {
-      const coords: [number, number] = [pos.coords.longitude, pos.coords.latitude];
-
-      if (!userMarkerRef.current) {
-        userMarkerRef.current = new mapboxgl.Marker({ color: "#F8D203" })
-          .setLngLat(coords)
-          .addTo(mapRef.current!);
-      } else {
-        userMarkerRef.current.setLngLat(coords);
-      }
-
-      mapRef.current?.flyTo({
-        center: coords,
-        zoom: 16,
-        speed: 0.8,
-        essential: true,
-      });
-
-      directionsRef.current?.setOrigin(coords);
-
-      //check if user is near danger zones
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        const coords: [number, number] = [
+          pos.coords.longitude,
+          pos.coords.latitude,
+        ];
+        userMarkerRef.current?.setLngLat(coords);
+        directionsRef.current?.setOrigin(coords);
+        mapRef.current?.flyTo({ center: coords, zoom: 16 });
+     //check if user is near danger zones
       checkNearbyDangerZones(coords);
     },
     (error) => {
@@ -305,12 +379,52 @@ const handleStartTrip = () => {
       maximumAge: 0,
       timeout: 20000,
     }
-  );
+  )}
+  const loadDangerZones = async () => {
+  if (!mapRef.current) return;
+
+  try {
+    const { data } = await axios.get("https://bassar-back-end.onrender.com/api/danger-zones/danger-zones");
+
+    if (!Array.isArray(data)) {
+      console.warn("No valid danger zone data received");
+      return;
+    }
+
+    data.forEach((zone: any) => {
+      const el = document.createElement("div");
+      el.style.width = "32px";
+      el.style.height = "32px";
+      el.style.backgroundSize = "contain";
+      el.style.backgroundRepeat = "no-repeat";
+
+      // Choose icon
+      if (zone.name.includes("جمال")) {
+        el.style.backgroundImage = `url(${camelWarningIcon})`;
+      } else if (zone.name.includes("انزلاق") || zone.name.includes("صخور")) {
+        el.style.backgroundImage = `url(${rockfallIcon})`;
+      } else {
+        el.style.backgroundImage = `url(${dangerIcon})`;
+      }
+
+      new mapboxgl.Marker(el)
+        .setLngLat([zone.location.lng, zone.location.lat])
+        .setPopup(new mapboxgl.Popup().setText(zone.name))
+        .addTo(mapRef.current!);
+    });
+
+    if (data.length === 0) {
+      showNotification("لا توجد مناطق تحذير حالياً");
+    }
+  } catch (error) {
+    console.error("فشل جلب بيانات المناطق الخطرة:", error);
+    showNotification("فشل تحميل بيانات التحذيرات");
+  }
 };
 
 const checkNearbyDangerZones = async (coords: [number, number]) => {
   try {
-    const { data: dangerZones } = await axios.get("https://localhost:3000/api/danger-zones");
+    const { data: dangerZones } = await axios.get("https://bassar-back-end.onrender.com/api/danger-zones/danger-zones");
 
     const nearbyZones = dangerZones.filter((zone: any) => {
       const threshold = 0.01; 
@@ -331,144 +445,71 @@ function showNotification(message: string) {
   const container = document.getElementById("notification-container");
   if (!container) return;
 
-  const notification = document.createElement("div");
-  notification.className = "notification";
-  notification.innerText = message;
+  requestAnimationFrame(() => {
+    const notification = document.createElement("div");
+    notification.className = "notification";
+    notification.innerText = message;
 
-  container.appendChild(notification);
+    container.appendChild(notification);
 
-  setTimeout(() => {
-    notification.remove();
-  }, 5000); 
+    setTimeout(() => {
+      notification.remove();
+    }, 5000);
+  });
 }
 
  return(
   <React.Fragment>
-    <div className="layout-container">
-      <div id="notification-container" className="notification-container"></div>
-    <div ref={mapContainerRef} className="map-container"/>
-      <button className="panel-toggle" onClick={() => {
-        const panel = document.getElementById("directions-panel");
-        panel?.classList.toggle("collapsed");
-      }}>
-        ☰ القائمة
-      </button>
-    <div id="directions-panel" className="panel"
-    style={{ 
-      padding: '10px', maxHeight: '100%', overflowY: 'auto', 
-      color: '#000', fontFamily: 'Arial, sans-serif'}} >
-      <div className="buttonsDiv" 
-      style={{ display: 'flex',flexDirection:
-       'column', justifyContent: 'center', 
-       alignContent: 'center'}}>
-      <div   className="FunctionBtns"
-       style={{
-          position: "absolute",
-          bottom: 100,
-          zIndex: 10,
-          display: "flex",
-          gap: "5px",
-          justifyContent: 'center',
-          width: "100%",
-          flexShrink: "0"
-         }} >
-           {/* بلّغ */}
-  <button
-    style={{
-      border: "2px solid #e74c3c",
-      cursor: "pointer",
-      color: "#e74c3c",
-      padding: "12px",
-      borderRadius: "10px",
-      fontSize: "15px",
-      display: "flex",
-    flexDirection: "row" ,
-     gap: "5px"  ,
-     width: '25%',
-     justifyContent:"center",
-      alignItems: "center",
-      fontWeight: "bold"
- }}
-    onClick={() => setShowReportOptions(!showReportOptions)}
-    title="بلّغ"
-  >
-    بلّغ
-    <FaExclamationTriangle />
-  </button>
+    <div className="layout-container bg-black">
+  <div id="notification-container" className="absolute top-4 right-4 z-50 flex flex-col items-end gap-2" />
+  <div className="relative h-screen w-screen overflow-hidden">
+  <div ref={mapContainerRef} className="absolute map-container  inset-0 z-0" />
+  <div id="mapbox-directions-steps" className="absolute top-4 left-4 z-10 max-h-[300px] w-[350px] overflow-y-auto bg-white bg-opacity-90 p-4 rounded-lg shadow" />
 
-  {/* اطلب مساعدة */}
+<div
+  id="directions-panel"
+  className="absolute top-4 right-4 z-10 bg-white bg-opacity-90
+   p-4  rounded-lg shadow-md max-w-xs w-[320px] 
+   flex flex-col-reverse gap-5 justify-center items-center"
+>
+  {/* Start Trip Button under the input UI */}
   <button
-    style={{
-      color: "#27ae60",
-      border: "2px solid #27ae60",
-      cursor: "pointer",
-      padding: "12px",
-      borderRadius: "10px",
-      fontSize: "15px",
-      display: "flex",
-     flexDirection: "row" ,
-      gap: "5px" ,
-      width: '35%' ,
-      justifyContent:"center",
-      alignItems: "center",
-      fontWeight: "bold"
-    }}
-    onClick={() => setShowHelpOptions(!showHelpOptions)}
-    title="اطلب مساعدة"
+    className=" top-40 right-1 z-10 w-full bg-yellow-400 text-white font-bold px-6 py-2 rounded-md shadow-md hover:bg-yellow-500"
+    onClick={handleStartTrip}
   >
-    اطلب مساعدة
-    <FaHandsHelping />
+    ابدأ الرحلة
   </button>
+  </div>
 
-  {/* السجل */}
-  <button
-    style={{
-      color: "#8e44ad",
-      border: "2px solid #8e44ad",
-      cursor: "pointer",
-      padding: "12px",
-      borderRadius: "10px",
-      fontSize: "15px",
-      display: "flex",
-      flexDirection: "row" ,
-      gap: "5px",
-      width: "25%",
-      height: "50px",
-      justifyContent:"center",
-      alignItems: "center",
-      fontWeight: "bold"
-    }}
-    onClick={() => setShowLog(!showLog)}
-    title="السجل"
-  >
-    السجل
-<RiChatHistoryFill />
-  </button>
- </div>
-  <button
-      style={{
-        position: "absolute",
-        bottom: 20,
-        right: 20,
-        zIndex: 1,
-        padding: "10px 20px",
-        fontWeight: "bold",
-        borderRadius: "8px",
-        backgroundColor: "#F8D203",
-        color: "#fff",
-        border: "none",
-        cursor: "pointer",
-        fontSize: '20px',
-        width: "320px"
-      }}
-      className="startBtn"
-      onClick={handleStartTrip}
+  {/* Bottom Navigation */}
+  <div className="absolute bottom-0 w-full z-10 bg-[#f3f8fe] 
+  bg-opacity-90 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 flex flex-row
+  items-center justify-center gap-3 sh">
+    <button
+      className="flex items-center gap-2 border border-red-600 text-red-600 px-4 py-2 rounded font-semibold hover:bg-red-100"
+      onClick={() => setShowReportOptions(true)}
     >
-      أبدأ الرحلة
+      بلّغ 
+      <FaExclamationTriangle className="hidden lg:block"/>
     </button>
-    </div>
-    </div>
-             {/* خيارات المساعدة */}
+    <button
+      className="flex items-center gap-2 border border-green-600 text-green-600 px-4 py-2 rounded font-semibold hover:bg-green-100"
+      onClick={() => setShowHelpOptions(true)}
+    >
+      اطلب مساعدة 
+     <FaHandsHelping className="hidden lg:block"/>
+    </button>
+    <button
+      className="flex items-center gap-2 border border-purple-600 text-purple-600 px-4 py-2 rounded font-semibold hover:bg-purple-100"
+      onClick={() => setShowLog(true)}
+    >
+      السجل 
+      <RiChatHistoryFill className="hidden lg:block"/>
+    </button>
+  </div>
+</div>
+ 
+{/* خيارات المساعدة */}
 {showHelpOptions && (
   <div
    className="modal-overlay"
@@ -510,7 +551,7 @@ function showNotification(message: string) {
   </div>
 )}
 
-      {/* خيارات البلاغ */}
+{/* خيارات البلاغ */}
 {showReportOptions && (
   <div
    className="modal-overlay"
