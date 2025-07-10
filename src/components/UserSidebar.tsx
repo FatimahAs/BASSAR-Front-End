@@ -53,7 +53,7 @@ export default function AdminSidebar() {
         ></div>
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar **/}
       <aside className="w-64 bg-white p-6 border-r border-[#d8d0d090] hidden md:block">
         <div className="flex justify-center items-center">
            <img src="/assets/logo.png" className=" w-25 mb-9" />
